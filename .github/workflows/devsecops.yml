@@ -36,7 +36,7 @@ jobs:
       - name: Semgrep local rules (no external code upload)
         run: docker run --rm -v "$PWD:/src" semgrep/semgrep:1.111.0 semgrep scan --config /src/devsecops/semgrep.yml --error --metrics=off /src/app /src/robot
       - name: Build image
-        run: docker build -t acolhe:${{ github.sha }} .
+        run: docker build --pull -t acolhe:${{ github.sha }} .
       - name: Trivy image vulnerabilities
         run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.60.0 image --exit-code 1 --severity HIGH,CRITICAL acolhe:${{ github.sha }}
       - name: Trivy IaC

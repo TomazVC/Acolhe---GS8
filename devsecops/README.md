@@ -38,3 +38,10 @@ O dashboard `monitoring/grafana-dashboard.json` pode ser importado em um Grafana
 Há regras adicionais de latência média >1s e concorrência >20, ambas limiares provisórios. Métricas de tentativas/uptime complementam esses sinais, mas não os substituem.
 
 O Docker usa ACOLHE_DB=/tmp/acolhe.db para compatibilidade com filesystem read-only. Dados são efêmeros e se perdem na recriação do container; para persistir, provisionar volume gravável UID10001, configurar ACOLHE_DB e rever retenção/privacidade. As integrações genai/vision/rpa também são copiadas à imagem.
+
+
+## Primeira CI pública e correção de imagem (2026-11-09)
+
+O run https://github.com/TomazVC/Acolhe---GS8/actions/runs/42685134583, commit `624c6e77c003c88bba8edfc6a1b86f3f5403beed`, aprovou testes Python/Node, Gitleaks, Semgrep e build Docker. O Trivy bloqueou a imagem Debian 13.7: 49 ocorrências HIGH e nenhuma CRITICAL. São ocorrências por pacote, não necessariamente CVEs distintas.
+
+Duas ocorrências em `zlib1g` tinham atualização indicada, para `1:1.3.dfsg+really1.3.1-1+deb13u1`. Outras estavam sem versão corrigida indicada ou com correção adiada pelo fornecedor. A imagem passa a aplicar as atualizações disponíveis da distribuição durante o build; a CI busca a imagem-base atual com `--pull`. Isso não garante ausência de vulnerabilidades sem correção. O bloqueio HIGH/CRITICAL continua ativo, sem `ignore-unfixed`, exceções de CVE ou supressão de erros. Consulte o run do commit atual antes de considerar a imagem aprovada. Nenhum deploy foi executado.

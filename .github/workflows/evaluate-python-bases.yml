@@ -1,0 +1,44 @@
+name: Evaluate official Python bases
+on:
+  push:
+    branches: [ci/evaluate-python-bases]
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        base: ["python:3.12-slim-bookworm", "python:3.12-alpine"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build candidate
+        env:
+          PYTHON_IMAGE: ${{ matrix.base }}
+        run: docker build --pull --build-arg "PYTHON_IMAGE=$PYTHON_IMAGE" -f devsecops/Dockerfile.candidate -t acolhe-candidate .
+      - name: Run suite inside candidate
+        run: docker run --rm -v "$PWD:/source:ro" -w /source acolhe-candidate python -B -m unittest discover -v
+      - name: Smoke actual image HTTP and SQLite
+        run: |
+          set -eu
+          docker run -d --name acolhe-candidate-test -p 127.0.0.1:8080:8080 acolhe-candidate
+          trap 'docker logs acolhe-candidate-test; docker rm -f acolhe-candidate-test' EXIT
+          python - <<'PY'
+          import json,time,urllib.request
+          for attempt in range(30):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8080/api/health', timeout=2) as r:
+                      assert r.status == 200
+                  break
+              except Exception:
+                  if attempt == 29: raise
+                  time.sleep(1)
+          for path in ['/', '/logo.png', '/api/lessons', '/api/summary', '/api/gold']:
+              with urllib.request.urlopen('http://127.0.0.1:8080'+path, timeout=5) as r:
+                  assert r.status == 200, path
+          print('Image HTTP smoke passed')
+          PY
+          docker exec acolhe-candidate-test python -c "import os,sqlite3; assert os.getuid()==10001; c=sqlite3.connect('/tmp/smoke.db'); c.execute('CREATE TABLE smoke (id INTEGER)'); c.execute('INSERT INTO smoke VALUES (1)'); c.commit(); assert c.execute('SELECT id FROM smoke').fetchone()==(1,); c.close(); print('Non-root SQLite smoke passed')"
+      - name: Scan candidate strictly
+        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.60.0 image --exit-code 1 --severity HIGH,CRITICAL acolhe-candidate

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "crossing",
+    "title": "Travessia acompanhada",
+    "keywords": "atravessar cruzar calle rua faixa semaforo semáforo",
+    "pt": "Para atravessar a rua, fique na calçada e peça ajuda a um adulto responsável. Use a faixa e respeite o semáforo. Nunca atravesse sozinho.",
+    "es": "Para cruzar la calle, espera en la acera y pide ayuda a un adulto responsable. Usa el paso peatonal y respeta el semáforo. Nunca cruces solo.",
+    "source": "Conteúdo autoral Acolhe, versão 1; revisão pedagógica pendente",
+    "license": "CC-BY-4.0"
+  },
+  {
+    "id": "lost",
+    "title": "Pedir ajuda",
+    "keywords": "perdido perdi ayuda ajuda responsável separado",
+    "pt": "Se você se perder, fique em um local seguro e peça ajuda a um funcionário identificado. Não saia com desconhecidos. Procure seu responsável.",
+    "es": "Si te pierdes, quédate en un lugar seguro y pide ayuda a un empleado identificado. No te vayas con desconocidos. Busca a tu responsable.",
+    "source": "Conteúdo autoral Acolhe, versão 1; revisão pedagógica pendente",
+    "license": "CC-BY-4.0"
+  },
+  {
+    "id": "backpack",
+    "title": "Mochila",
+    "keywords": "mochila backpack guardar materiais",
+    "pt": "Em português dizemos mochila. Em espanhol também: mochila. Exemplo: Eu guardo meu caderno na mochila.",
+    "es": "En portugués decimos mochila. En español también: mochila. Ejemplo: Eu guardo meu caderno na mochila.",
+    "source": "Conteúdo autoral Acolhe, versão 1; revisão pedagógica pendente",
+    "license": "CC-BY-4.0"
+  },
+  {
+    "id": "chair",
+    "title": "Cadeira",
+    "keywords": "cadeira silla sentar",
+    "pt": "Em português dizemos cadeira. Em espanhol: silla. Exemplo: Eu sento na cadeira.",
+    "es": "En portugués decimos cadeira. En español: silla. Ejemplo: Eu sento na cadeira.",
+    "source": "Conteúdo autoral Acolhe, versão 1; revisão pedagógica pendente",
+    "license": "CC-BY-4.0"
+  },
+  {
+    "id": "bottle",
+    "title": "Garrafa",
+    "keywords": "garrafa botella água agua beber",
+    "pt": "Em português dizemos garrafa. Em espanhol: botella. Exemplo: Eu bebo água da garrafa.",
+    "es": "En portugués decimos garrafa. En español: botella. Ejemplo: Eu bebo água da garrafa.",
+    "source": "Conteúdo autoral Acolhe, versão 1; revisão pedagógica pendente",
+    "license": "CC-BY-4.0"
+  },
+  {
+    "id": "bus",
+    "title": "Ônibus acompanhado",
+    "keywords": "onibus ônibus autobus autobús embarcar transporte",
+    "pt": "Ônibus em espanhol é autobús. Espere longe da borda da calçada e embarque com seu responsável. Não corra atrás do ônibus.",
+    "es": "Ônibus en español es autobús. Espera lejos del borde de la acera y sube con tu responsable. No corras detrás del autobús.",
+    "source": "Conteúdo autoral Acolhe, versão 1; revisão pedagógica pendente",
+    "license": "CC-BY-4.0"
+  },
+  {
+    "id": "greeting",
+    "title": "Cumprimentos",
+    "keywords": "ola olá hola bom dia buenos días cumprimentos",
+    "pt": "Você pode dizer: Olá! Bom dia! Em espanhol: ¡Hola! ¡Buenos días!",
+    "es": "Puedes decir en portugués: Olá! Bom dia! En español: ¡Hola! ¡Buenos días!",
+    "source": "Conteúdo autoral Acolhe, versão 1; revisão pedagógica pendente",
+    "license": "CC-BY-4.0"
+  },
+  {
+    "id": "book",
+    "title": "Livro e caderno",
+    "keywords": "livro libro caderno cuaderno ler escrever",
+    "pt": "Livro em espanhol é libro. Caderno é cuaderno. Exemplo: Eu leio o livro e escrevo no caderno.",
+    "es": "Livro en español es libro. Caderno es cuaderno. Ejemplo: Eu leio o livro e escrevo no caderno.",
+    "source": "Conteúdo autoral Acolhe, versão 1; revisão pedagógica pendente",
+    "license": "CC-BY-4.0"
+  }
+]

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-07T13:12:22.875554+00:00",
+  "synthetic": true,
+  "source_batches": 4,
+  "totals": {
+    "demand": 190,
+    "services": 40
+  },
+  "by_region": [
+    {
+      "region": "Parana",
+      "demand": 80,
+      "services": 18
+    },
+    {
+      "region": "Sao Paulo",
+      "demand": 110,
+      "services": 22
+    }
+  ],
+  "by_language": [
+    {
+      "language": "es",
+      "demand": 110,
+      "services": 22
+    },
+    {
+      "language": "pt",
+      "demand": 80,
+      "services": 18
+    }
+  ],
+  "quality": {
+    "rejected": 0
+  },
+  "provenance": {
+    "mode": "normalized CSV imports; supplied demo data are synthetic",
+    "sources": [
+      "demand",
+      "services"
+    ]
+  }
+}

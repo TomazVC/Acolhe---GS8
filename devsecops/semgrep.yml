@@ -1,0 +1,20 @@
+rules:
+  - id: no-dynamic-evaluation
+    languages: [python]
+    message: "Do not execute dynamically supplied Python."
+    severity: ERROR
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+  - id: no-shell-true
+    languages: [python]
+    message: "Shell execution requires removal or explicit review."
+    severity: ERROR
+    pattern: subprocess.$FUNC(..., shell=True, ...)
+  - id: no-pickle-untrusted-data
+    languages: [python]
+    message: "Use JSON instead of executable pickle deserialization."
+    severity: ERROR
+    pattern-either:
+      - pattern: pickle.load(...)
+      - pattern: pickle.loads(...)

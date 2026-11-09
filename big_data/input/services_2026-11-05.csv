@@ -1,0 +1,3 @@
+record_id,region,language,count,snapshot_date,synthetic
+sp,Sao Paulo,es,12,2026-11-05,true
+pr,Parana,pt,8,2026-11-05,true

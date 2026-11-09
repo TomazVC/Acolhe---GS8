@@ -1,0 +1,18 @@
+# Replace paths with curated real data. No images included.
+path: ./vision/data/real
+train: images/train
+val: images/val
+test: images/test
+names:
+  0: backpack
+  1: chair
+  2: book
+  3: bottle
+  4: cup
+  5: spoon
+  6: fork
+  7: bowl
+  8: clock
+  9: umbrella
+  10: bus
+  11: traffic light

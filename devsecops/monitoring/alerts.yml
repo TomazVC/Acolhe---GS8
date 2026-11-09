@@ -1,0 +1,31 @@
+groups:
+  - name: acolhe
+    rules:
+      - alert: AcolheUnavailable
+        expr: up{job="acolhe"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Acolhe indisponivel por mais de 2 minutos"
+      - alert: AcolheErrorRate
+        expr: rate(acolhe_errors_total[5m]) / clamp_min(rate(acolhe_requests_total[5m]), 0.001) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Taxa de erros superior a 5%"
+      - alert: AcolheHighLatency
+        expr: rate(acolhe_request_duration_seconds_sum[5m]) / clamp_min(rate(acolhe_request_duration_seconds_count[5m]), 0.001) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latencia media superior a 1 segundo"
+      - alert: AcolheConcurrentRequests
+        expr: acolhe_active_requests > 20
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Mais de 20 requisicoes simultaneas; investigar capacidade"

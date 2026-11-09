@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Acolhe" targetNamespace="https://acolhe.local/rpa">
+<process id="RelatorioAcolhe" name="Gerar relatorio agregado local" isExecutable="false">
+<startEvent id="start"/><task id="validate" name="Validar banco e ler agregados"/><exclusiveGateway id="decision" name="Leitura concluida?" default="failure"/><task id="write" name="Gerar JSON e Markdown"/><task id="successlog" name="Registrar sucesso"/><task id="errorlog" name="Registrar erro"/><endEvent id="success" name="Sucesso"/><endEvent id="error" name="Falha"/>
+<sequenceFlow id="s1" sourceRef="start" targetRef="validate"/><sequenceFlow id="s2" sourceRef="validate" targetRef="decision"/><sequenceFlow id="ok" name="Sim" sourceRef="decision" targetRef="write"><conditionExpression xsi:type="tFormalExpression">read_ok</conditionExpression></sequenceFlow><sequenceFlow id="failure" name="Nao" sourceRef="decision" targetRef="errorlog"/><sequenceFlow id="s3" sourceRef="write" targetRef="successlog"/><sequenceFlow id="s4" sourceRef="successlog" targetRef="success"/><sequenceFlow id="s5" sourceRef="errorlog" targetRef="error"/>
+</process></definitions>

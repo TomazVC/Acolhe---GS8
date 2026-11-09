@@ -1,0 +1,20 @@
+{
+  "source_url": "",
+  "license": "",
+  "real_images": false,
+  "split_method": "",
+  "class_names": [
+    "backpack",
+    "chair",
+    "book",
+    "bottle",
+    "cup",
+    "spoon",
+    "fork",
+    "bowl",
+    "clock",
+    "umbrella",
+    "bus",
+    "traffic light"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "utc": "2026-11-07T13:36:14.784806+00:00",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "files_sha256": {
+    "app\\core.py": "e1bac14433b34917732070c82c66e31ee6a020a6101ef9bd87720e97b0a36f23",
+    "app\\server.py": "da0eeaa8163e1cd279418a67a26febd062cfcd53883fa9ee12d72fc4dc8a60bf",
+    "app\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests\\test_core.py": "50498c4d70933c4d153c91b260a461883e1ad6aa4d2562c44de6445d3e04f407",
+    "tests\\test_http.py": "6a48a92eb5c214f3aa44c7a47ffa43e5e73405e67bc0d00f01c7637402fb1bfe",
+    "tests\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "genai\\compare.py": "49f9afe160eca3aa36dbf5c55bf6515e92f3402e69b1dd7cb91e8ee6af9841c0",
+    "genai\\evaluate.py": "5cc91f7e7c0971434c5e3359280fabd2e249dbecc6a88664111fe237d13b978d",
+    "genai\\execute_notebook.py": "56830e43e695cbdc44e3e0d6ce352ba31e746a1b89694d90bffdaa784af67d5c",
+    "genai\\service.py": "ce09321ed2baf4ab5e5f90813f5461d95bee04dc339cc7d209c2d6564f76878e",
+    "genai\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "genai\\tests\\test_service.py": "f01f63786f97d7f824bb79afc0ecbf91d6aeaca94b51db0485612a03a550fa38",
+    "genai\\tests\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vision\\service.py": "31e6dd397dd151b3aa73938d9880817f676f3a90e7a7892817ab99718a7429b6",
+    "vision\\train.py": "70c4c20fc077c6cf0d0cb7e949a8ad4dec66a6ad5743dc0f0281a60bbb0cf437",
+    "vision\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vision\\tests\\test_service.py": "9a0fd7449134fbd523ab993fed1f2637942e554593a2f452381d043a128c2547",
+    "vision\\tests\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "robot\\service.py": "4cffdfa3eec858178e6aca0d3136af41b030376a5db6287ab51988532c372c94",
+    "robot\\simulator.py": "840993c079a6d45328f83a9d271534a2a0e18c2c1342e93eb5f9a852719405e7",
+    "robot\\test_robot.py": "633e9c2a9ea5bd1ba4e2e7b772640b29eaaa11faafb6275fafbcf78ed4bf58aa",
+    "robot\\__init__.py": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "rpa\\robot.py": "665464ed3722a288ee292684a64d3118f64dd536268fa1d053a36e59dea03a3c",
+    "rpa\\test_robot.py": "97465334c7c93492bd07c4fb480020c3f0ddd54c84e823a4e4b19a2449ed9caf",
+    "rpa\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "big_data\\pipeline.py": "eccd3849db60e9afd224b5e18f3bfef8e76fc9c6bddd441b621b34e4fd36a494",
+    "big_data\\test_pipeline.py": "509450e07abd7965a7c11462b792c9b675f68b4a53d6fc28ccbcfab6b599029a",
+    "big_data\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "big_data\\airflow\\acolhe_dag.py": "7965b0260c9bf85546994cf415eefbf105e858847d6fed9ba573ade870c6b25d",
+    "big_data\\databricks\\medallion.py": "12699351a0634ccaa24c367ddff536ee88a5aa36c70421f8677e6a66eb2cd87a",
+    "app\\static\\app.js": "e25ae89cb3c594f42ef90676099ecbaba3120fda82d20406a69337b09a57810f",
+    "app\\static\\sw.js": "5aa41e9fdf570f47b4fced4d6e841010d5f08df31cebcc3b2f09b646c5e4d3d6"
+  },
+  "results": [
+    {
+      "command": [
+        "python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": "test_all_quality_rules (big_data.test_pipeline.PipelineTests.test_all_quality_rules) ... ok\ntest_five_gold_queries_execute (big_data.test_pipeline.PipelineTests.test_five_gold_queries_execute) ... ok\ntest_quality_rejects_invalid_rows (big_data.test_pipeline.PipelineTests.test_quality_rejects_invalid_rows) ... ok\ntest_two_batches_idempotent_and_gold (big_data.test_pipeline.PipelineTests.test_two_batches_idempotent_and_gold) ... ok\ntest_empty_refuses (genai.tests.test_service.ServiceTests.test_empty_refuses) ... ok\ntest_injection_refuses (genai.tests.test_service.ServiceTests.test_injection_refuses) ... ok\ntest_invalid_json_is_refused (genai.tests.test_service.ServiceTests.test_invalid_json_is_refused) ... ok\ntest_language_validation (genai.tests.test_service.ServiceTests.test_language_validation) ... ok\ntest_no_model_is_honest (genai.tests.test_service.ServiceTests.test_no_model_is_honest) ... ok\ntest_recall (genai.tests.test_service.ServiceTests.test_recall) ... ok\ntest_retrieve_bilingual (genai.tests.test_service.ServiceTests.test_retrieve_bilingual) ... ok\ntest_unknown_refuses (genai.tests.test_service.ServiceTests.test_unknown_refuses) ... ok\ntest_valid_json (genai.tests.test_service.ServiceTests.test_valid_json) ... ok\ntest_absent_stops (robot.test_robot.RobotTests.test_absent_stops) ... ok\ntest_correct_arm (robot.test_robot.RobotTests.test_correct_arm) ... ok\ntest_gateway_default_simulated (robot.test_robot.RobotTests.test_gateway_default_simulated) ... ok\ntest_reject_implicit_truth (robot.test_robot.RobotTests.test_reject_implicit_truth) ... ok\ntest_sensor_context (robot.test_robot.RobotTests.test_sensor_context) ... ok\ntest_unknown_mode_rejected (robot.test_robot.RobotTests.test_unknown_mode_rejected) ... ok\ntest_wrong_head (robot.test_robot.RobotTests.test_wrong_head) ... ok\ntest_aggregate_without_identifiers (rpa.test_robot.RobotTests.test_aggregate_without_identifiers) ... ok\ntest_bad_schema_logs_failure (rpa.test_robot.RobotTests.test_bad_schema_logs_failure) ... ok\ntest_empty_database_reports_zero (rpa.test_robot.RobotTests.test_empty_database_reports_zero) ... ok\ntest_missing_database_is_not_created (rpa.test_robot.RobotTests.test_missing_database_is_not_created) ... ok\ntest_concurrent_duplicate_is_idempotent (tests.test_core.CoreTests.test_concurrent_duplicate_is_idempotent) ... ok\ntest_default_language_and_duplicate_keep_original_language (tests.test_core.CoreTests.test_default_language_and_duplicate_keep_original_language) ... ok\ntest_delete_session (tests.test_core.CoreTests.test_delete_session) ... ok\ntest_expired_session_rejected_without_restart (tests.test_core.CoreTests.test_expired_session_rejected_without_restart) ... ok\ntest_five_bilingual_lessons (tests.test_core.CoreTests.test_five_bilingual_lessons) ... ok\ntest_idempotent_attempt (tests.test_core.CoreTests.test_idempotent_attempt) ... ok\ntest_invalid_option_rejected (tests.test_core.CoreTests.test_invalid_option_rejected) ... ok\ntest_invalid_session_rejected (tests.test_core.CoreTests.test_invalid_session_rejected) ... ok\ntest_language_rejected (tests.test_core.CoreTests.test_language_rejected) ... ok\ntest_migration_preserves_old_attempts (tests.test_core.CoreTests.test_migration_preserves_old_attempts) ... ok\ntest_real_attempt_and_summary (tests.test_core.CoreTests.test_real_attempt_and_summary) ... ok\ntest_structured_session_id_rejected (tests.test_core.CoreTests.test_structured_session_id_rejected) ... ok\ntest_summary_prunes_expired_sessions_and_answers (tests.test_core.CoreTests.test_summary_prunes_expired_sessions_and_answers) ... ok\ntest_answers_not_disclosed (tests.test_http.HttpTests.test_answers_not_disclosed) ... ok\ntest_cross_origin_blocked (tests.test_http.HttpTests.test_cross_origin_blocked) ... ok\ntest_health_and_static (tests.test_http.HttpTests.test_health_and_static) ... ok\ntest_invalid_attempt_language_is_rejected (tests.test_http.HttpTests.test_invalid_attempt_language_is_rejected) ... ok\ntest_invalid_json (tests.test_http.HttpTests.test_invalid_json) ... ok\ntest_language_switch_preserves_attempt_history (tests.test_http.HttpTests.test_language_switch_preserves_attempt_history) ... ok\ntest_session_attempt_http (tests.test_http.HttpTests.test_session_attempt_http) ... ok\ntest_traversal_blocked (tests.test_http.HttpTests.test_traversal_blocked) ... ok\ntest_classes_are_educational (vision.tests.test_service.VisionTests.test_classes_are_educational) ... ok\ntest_missing_model_fails_explicitly (vision.tests.test_service.VisionTests.test_missing_model_fails_explicitly) ... ok\ntest_status_has_readiness (vision.tests.test_service.VisionTests.test_status_has_readiness) ... ok\n\n----------------------------------------------------------------------\nRan 48 tests in 5.056s\n\nOK\n"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "app/static/app.js"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "app/static/sw.js"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  ]
+}

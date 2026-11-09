@@ -1,0 +1,48 @@
+# Runtime data and secrets
+/data/
+.env
+.env.*
+!.env.example
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+# Python and local tooling
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+node_modules/
+.publication-backup/
+# Documentation build dependencies and intermediate output
+/docs/.deps/
+/docs/qa/
+# Terraform private configuration/state
+*.tfstate*
+*.tfvars
+.terraform/
+# External snapshots: review redistribution rights before publishing
+/big_data/official_snapshots/
+# Runtime output; retain only the reviewed synthetic demo summary required by Docker
+/big_data/output/*
+!/big_data/output/summary.json
+/rpa/output/
+/rpa/reports/
+# Dataset examples only; do not publish photographs, annotations, or model weights
+/vision/data/*
+!/vision/data/dataset.example.yaml
+!/vision/data/provenance.example.json
+/vision/models/
+/vision/datasets/
+/vision/.test-deps/
+/vision/*.py.before-guards
+/vision/artifacts*/
+/vision/runs/
+*.pt
+*.onnx

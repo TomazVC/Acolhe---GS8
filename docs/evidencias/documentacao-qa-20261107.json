@@ -1,0 +1,15 @@
+{
+  "utc": "2026-11-07T20:12:58.260687+00:00",
+  "file": "docs\\manual_acolhe.pdf",
+  "sha256": "aacd8b1403ddc2a9f3e59132ae798259d5c578f218122ff81980f87179021d87",
+  "pages": 10,
+  "outline_entries": 11,
+  "checks": [
+    "four names and RMs in PDF and both READMEs",
+    "historical test totals and limits retained",
+    "attempt language definition present",
+    "text blocks within page bounds",
+    "all 10 final page PNGs visually inspected; no clipping or overlap observed"
+  ],
+  "limits": "Document QA only; no new application/runtime validation performed. Test counts cite T03 evidence."
+}

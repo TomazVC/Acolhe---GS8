@@ -1,0 +1,85 @@
+name: Acolhe DevSecOps
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Publicar imagem e atualizar Azure previamente provisionado"
+        required: true
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: acolhe-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node --check app/static/app.js
+      - run: node --test tests/frontend.test.cjs
+      - name: Detect secrets in history
+        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.24.2 detect --source=/repo --no-banner --redact --exit-code=1
+      - name: Semgrep local rules (no external code upload)
+        run: docker run --rm -v "$PWD:/src" semgrep/semgrep:1.111.0 semgrep scan --config /src/devsecops/semgrep.yml --error --metrics=off /src/app /src/robot
+      - name: Build image
+        run: docker build -t acolhe:${{ github.sha }} .
+      - name: Trivy image vulnerabilities
+        run: docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.60.0 image --exit-code 1 --severity HIGH,CRITICAL acolhe:${{ github.sha }}
+      - name: Trivy IaC
+        run: docker run --rm -v "$PWD:/src" aquasec/trivy:0.60.0 config --exit-code 1 --severity HIGH,CRITICAL /src/devsecops/terraform
+      - name: Preserve tested image
+        run: docker save acolhe:${{ github.sha }} -o /tmp/acolhe-image.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tested-image
+          path: /tmp/acolhe-image.tar
+          retention-days: 3
+  deploy:
+    needs: test-and-build
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: tested-image
+          path: /tmp
+      - name: Publish tested image
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_SHA}"
+          docker load -i /tmp/acolhe-image.tar
+          echo "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker tag "acolhe:$GITHUB_SHA" "$IMAGE"
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy existing Container App
+        env:
+          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          APP_NAME: ${{ vars.AZURE_CONTAINER_APP }}
+        run: az containerapp update --name "$APP_NAME" --resource-group "$RESOURCE_GROUP" --image "$IMAGE"
+

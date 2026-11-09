@@ -1,0 +1,137 @@
+{
+  "scope": "lexical retrieval on 16 hand-authored bilingual cases, not independent benchmark or LLM evaluation",
+  "recall_at_1": 0.6875,
+  "recall_at_3": 0.6875,
+  "cases": [
+    {
+      "question": "Como atravessar a rua?",
+      "expected": "crossing",
+      "retrieved": [
+        "crossing"
+      ]
+    },
+    {
+      "question": "¿Cómo cruzar la calle?",
+      "expected": "crossing",
+      "retrieved": [
+        "crossing"
+      ]
+    },
+    {
+      "question": "Estou perdido",
+      "expected": "lost",
+      "retrieved": [
+        "lost"
+      ]
+    },
+    {
+      "question": "Necesito ayuda, estoy perdido",
+      "expected": "lost",
+      "retrieved": [
+        "lost",
+        "crossing"
+      ]
+    },
+    {
+      "question": "Como digo silla?",
+      "expected": "chair",
+      "retrieved": [
+        "chair"
+      ]
+    },
+    {
+      "question": "O que é mochila?",
+      "expected": "backpack",
+      "retrieved": [
+        "backpack"
+      ]
+    },
+    {
+      "question": "Como digo botella?",
+      "expected": "bottle",
+      "retrieved": [
+        "bottle"
+      ]
+    },
+    {
+      "question": "Vou embarcar no ônibus",
+      "expected": "bus",
+      "retrieved": [
+        "bus"
+      ]
+    },
+    {
+      "question": "Como dizer buenos días?",
+      "expected": "greeting",
+      "retrieved": [
+        "greeting"
+      ]
+    },
+    {
+      "question": "Como digo cuaderno?",
+      "expected": "book",
+      "retrieved": [
+        "book"
+      ]
+    },
+    {
+      "question": "Posso ir para o outro lado?",
+      "expected": "crossing",
+      "retrieved": []
+    },
+    {
+      "question": "Cadê quem estava comigo?",
+      "expected": "lost",
+      "retrieved": []
+    },
+    {
+      "question": "Onde coloco meu estojo?",
+      "expected": "backpack",
+      "retrieved": [
+        "backpack"
+      ]
+    },
+    {
+      "question": "Quero me acomodar",
+      "expected": "chair",
+      "retrieved": []
+    },
+    {
+      "question": "Preciso me hidratar",
+      "expected": "bottle",
+      "retrieved": []
+    },
+    {
+      "question": "Saludamos al amanecer",
+      "expected": "greeting",
+      "retrieved": []
+    }
+  ],
+  "errors": [
+    {
+      "question": "Posso ir para o outro lado?",
+      "expected": "crossing",
+      "retrieved": []
+    },
+    {
+      "question": "Cadê quem estava comigo?",
+      "expected": "lost",
+      "retrieved": []
+    },
+    {
+      "question": "Quero me acomodar",
+      "expected": "chair",
+      "retrieved": []
+    },
+    {
+      "question": "Preciso me hidratar",
+      "expected": "bottle",
+      "retrieved": []
+    },
+    {
+      "question": "Saludamos al amanecer",
+      "expected": "greeting",
+      "retrieved": []
+    }
+  ]
+}

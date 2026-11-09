@@ -1,12 +1,10 @@
-FROM python:3.12-slim
-# Apply available distribution security fixes before creating the runtime user.
-# The CI vulnerability gate remains strict, including findings without a fix.
-RUN apt-get update \
-    && apt-get upgrade -y --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+# Official Python image validated by the base evaluation workflow.
+FROM python:3.12-alpine@sha256:e064671ca452259bab50e8e2c7bd896e39e9a343bb06ca25234adf6fe18d0fc7
+# Keep distribution security fixes current without weakening the CI gate.
+RUN apk upgrade --no-cache
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HOST=0.0.0.0 PORT=8080 ACOLHE_DB=/tmp/acolhe.db
 WORKDIR /srv/acolhe
-RUN groupadd --gid 10001 acolhe && useradd --uid 10001 --gid acolhe --no-create-home acolhe
+RUN addgroup -g 10001 acolhe && adduser -D -H -u 10001 -G acolhe acolhe
 COPY --chown=acolhe:acolhe app ./app
 COPY --chown=acolhe:acolhe robot ./robot
 COPY --chown=acolhe:acolhe genai ./genai

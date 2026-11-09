@@ -1,47 +1,57 @@
 # DevSecOps Acolhe
 
-## Execução local
-Na raiz, `python -m app.server` inicia a aplicação (porta 8080). `docker compose up --build` é o caminho container. `docker compose --profile monitoring up --build` acrescenta Prometheus em http://localhost:9090. A aplicação fica restrita ao loopback do host na porta 8080. Container não root, filesystem somente leitura no Compose, capabilities removidas e no-new-privileges. Não foi possível executar Docker aqui: daemon indisponível; estes arquivos ainda exigem build e smoke test.
+## ExecuÃ§Ã£o local
+Na raiz, `python -m app.server` inicia a aplicaÃ§Ã£o (porta 8080). `docker compose up --build` Ã© o caminho container. `docker compose --profile monitoring up --build` acrescenta Prometheus em http://localhost:9090. A aplicaÃ§Ã£o fica restrita ao loopback do host na porta 8080. Container nÃ£o root, filesystem somente leitura no Compose, capabilities removidas e no-new-privileges. NÃ£o foi possÃ­vel executar Docker aqui: daemon indisponÃ­vel; estes arquivos ainda exigem build e smoke test.
 
 ## Pipeline
-`.github/workflows/devsecops.yml` executa testes da aplicação e robô, Gitleaks no histórico, Semgrep com regras locais, build, Trivy imagem e IaC. HIGH/CRITICAL bloqueiam; não há `continue-on-error`. Imagem testada é um artefato e o deploy utiliza esse mesmo tar. As tags de ferramentas estão fixadas em versões; endurecimento futuro: validar versões atuais e substituir tags por digests/SHA aprovados. Não alegar ausência de vulnerabilidades antes de rodar os scanners. Regras Semgrep locais são uma base pequena, não uma auditoria completa.
+`.github/workflows/devsecops.yml` executa testes da aplicaÃ§Ã£o e robÃ´, Gitleaks no histÃ³rico, Semgrep com regras locais, build, Trivy imagem e IaC. HIGH/CRITICAL bloqueiam; nÃ£o hÃ¡ `continue-on-error`. Imagem testada Ã© um artefato e o deploy utiliza esse mesmo tar. As tags de ferramentas estÃ£o fixadas em versÃµes; endurecimento futuro: validar versÃµes atuais e substituir tags por digests/SHA aprovados. NÃ£o alegar ausÃªncia de vulnerabilidades antes de rodar os scanners. Regras Semgrep locais sÃ£o uma base pequena, nÃ£o uma auditoria completa.
 
-Deploy não ocorre em push/PR: depende de execução manual com deploy=true, branch main, DEPLOY_ENABLED=true e environment production. Configure no GitHub required reviewers e proteção de main ANTES de habilitar a variável. YAML sozinho não cria regra de aprovação. O deploy publica a imagem no GHCR e atualiza um Azure Container App já criado. O GHCR deve estar público ou o Container App precisa de acesso explicitamente configurado ao registro privado; o exemplo Terraform pressupõe imagem pública. Configurar OIDC Azure com identidade de privilégio mínimo, secrets AZURE_CLIENT_ID/AZURE_TENANT_ID/AZURE_SUBSCRIPTION_ID e vars AZURE_RESOURCE_GROUP/AZURE_CONTAINER_APP. Nenhuma conta, secret, permissão, ambiente GitHub ou recurso foi criado. Publicação/infra requerem autorização separada.
+Deploy nÃ£o ocorre em push/PR: depende de execuÃ§Ã£o manual com deploy=true, branch main, DEPLOY_ENABLED=true e environment production. Configure no GitHub required reviewers e proteÃ§Ã£o de main ANTES de habilitar a variÃ¡vel. YAML sozinho nÃ£o cria regra de aprovaÃ§Ã£o. O deploy publica a imagem no GHCR e atualiza um Azure Container App jÃ¡ criado. O GHCR deve estar pÃºblico ou o Container App precisa de acesso explicitamente configurado ao registro privado; o exemplo Terraform pressupÃµe imagem pÃºblica. Configurar OIDC Azure com identidade de privilÃ©gio mÃ­nimo, secrets AZURE_CLIENT_ID/AZURE_TENANT_ID/AZURE_SUBSCRIPTION_ID e vars AZURE_RESOURCE_GROUP/AZURE_CONTAINER_APP. Nenhuma conta, secret, permissÃ£o, ambiente GitHub ou recurso foi criado. PublicaÃ§Ã£o/infra requerem autorizaÃ§Ã£o separada.
 
-## IaC Azure (exemplo real, NÃO aplicado)
-`terraform/main.tf` declara resource group, Container Apps environment e Container App com HTTPS, escala 0..1 e robô simulado. Requer assinatura Azure, quota/região e imagem publicada. Pode gerar cobranças mesmo em laboratório: custo não estimado nesta entrega. Não execute apply sem orçamento e aprovação.
+## IaC Azure (exemplo real, NÃƒO aplicado)
+`terraform/main.tf` declara resource group, Container Apps environment e Container App com HTTPS, escala 0..1 e robÃ´ simulado. Requer assinatura Azure, quota/regiÃ£o e imagem publicada. Pode gerar cobranÃ§as mesmo em laboratÃ³rio: custo nÃ£o estimado nesta entrega. NÃ£o execute apply sem orÃ§amento e aprovaÃ§Ã£o.
 
-Sequência manual de validação: `terraform fmt -check`, `terraform init -backend=false`, `terraform validate`; depois plano revisado em ambiente autorizado. Copiar terraform.tfvars.example localmente e substituir valores, nunca versionar tfvars/state/plano com dados reais. Antes de uso compartilhado, configurar backend remoto seguro com locking, restringir RBAC e emitir lockfile de provedores após init. CLI Terraform ausente aqui: fmt/validate/plan/apply não executados. O exemplo não é uma implantação comprovada.
+SequÃªncia manual de validaÃ§Ã£o: `terraform fmt -check`, `terraform init -backend=false`, `terraform validate`; depois plano revisado em ambiente autorizado. Copiar terraform.tfvars.example localmente e substituir valores, nunca versionar tfvars/state/plano com dados reais. Antes de uso compartilhado, configurar backend remoto seguro com locking, restringir RBAC e emitir lockfile de provedores apÃ³s init. CLI Terraform ausente aqui: fmt/validate/plan/apply nÃ£o executados. O exemplo nÃ£o Ã© uma implantaÃ§Ã£o comprovada.
 
-## Observabilidade: quatro métricas
-- acolhe_requests_total: volume de requisições; `rate(acolhe_requests_total[5m])`.
+## Observabilidade: quatro mÃ©tricas
+- acolhe_requests_total: volume de requisiÃ§Ãµes; `rate(acolhe_requests_total[5m])`.
 - acolhe_attempts_total: tentativas educacionais; `increase(acolhe_attempts_total[1h])`.
-- acolhe_errors_total: falhas da aplicação; taxa relativa às requisições.
-- acolhe_uptime_seconds: tempo de vida do processo, útil para detectar reinícios.
+- acolhe_errors_total: falhas da aplicaÃ§Ã£o; taxa relativa Ã s requisiÃ§Ãµes.
+- acolhe_uptime_seconds: tempo de vida do processo, Ãºtil para detectar reinÃ­cios.
 
-Prometheus coleta `/metrics` a cada 15s. Alertas: indisponibilidade por 2min e taxa de erros >5% por 5min. Verificar com `promtool check config` e `promtool check rules` ao ter container disponível. Alertas aparecem no Prometheus; entrega externa exige Alertmanager/destinatário autorizado, NÃO configurados. Não há envio de mensagens.
+Prometheus coleta `/metrics` a cada 15s. Alertas: indisponibilidade por 2min e taxa de erros >5% por 5min. Verificar com `promtool check config` e `promtool check rules` ao ter container disponÃ­vel. Alertas aparecem no Prometheus; entrega externa exige Alertmanager/destinatÃ¡rio autorizado, NÃƒO configurados. NÃ£o hÃ¡ envio de mensagens.
 
-## Pendências e roteiro de evidência
-1. Executar testes e build Docker; capturar healthcheck e usuário UID10001.
-2. Publicar repositório somente após autorização; executar CI e guardar URL do run e relatórios de cada scanner.
+## PendÃªncias e roteiro de evidÃªncia
+1. Executar testes e build Docker; capturar healthcheck e usuÃ¡rio UID10001.
+2. Publicar repositÃ³rio somente apÃ³s autorizaÃ§Ã£o; executar CI e guardar URL do run e relatÃ³rios de cada scanner.
 3. Instalar/validar Terraform em ambiente autorizado; revisar plano e custos antes de aplicar.
-4. Configurar environment production com aprovadores e OIDC com menor privilégio; fazer deploy apenas quando autorizado.
-5. Capturar dashboard das quatro métricas e alerta disparado em ensaio controlado. Não simular evidência como se fosse produção.
-6. Escopo acadêmico: dados de demonstração apenas. Rever autenticação, TLS/proxy, persistência, LGPD e limites antes de expor a aplicação a usuários reais.
+4. Configurar environment production com aprovadores e OIDC com menor privilÃ©gio; fazer deploy apenas quando autorizado.
+5. Capturar dashboard das quatro mÃ©tricas e alerta disparado em ensaio controlado. NÃ£o simular evidÃªncia como se fosse produÃ§Ã£o.
+6. Escopo acadÃªmico: dados de demonstraÃ§Ã£o apenas. Rever autenticaÃ§Ã£o, TLS/proxy, persistÃªncia, LGPD e limites antes de expor a aplicaÃ§Ã£o a usuÃ¡rios reais.
 
 ### Quatro sinais de ouro
-O dashboard `monitoring/grafana-dashboard.json` pode ser importado em um Grafana existente, selecionando o datasource Prometheus. Não foi provisionado nem testado no Grafana.
-- Latência: rate(acolhe_request_duration_seconds_sum[5m]) / rate(acolhe_request_duration_seconds_count[5m]), média, não p95.
-- Tráfego: rate(acolhe_requests_total[5m]), requisições por segundo.
-- Erros: rate(acolhe_errors_total[5m]) / clamp_min(rate(acolhe_requests_total[5m]), 0.001), proporção.
-- Saturação: acolhe_active_requests, concorrência como proxy de saturação; não mede CPU/memória nem percentual de capacidade. Threshold inicial 20 requer calibração por teste de carga.
-Há regras adicionais de latência média >1s e concorrência >20, ambas limiares provisórios. Métricas de tentativas/uptime complementam esses sinais, mas não os substituem.
+O dashboard `monitoring/grafana-dashboard.json` pode ser importado em um Grafana existente, selecionando o datasource Prometheus. NÃ£o foi provisionado nem testado no Grafana.
+- LatÃªncia: rate(acolhe_request_duration_seconds_sum[5m]) / rate(acolhe_request_duration_seconds_count[5m]), mÃ©dia, nÃ£o p95.
+- TrÃ¡fego: rate(acolhe_requests_total[5m]), requisiÃ§Ãµes por segundo.
+- Erros: rate(acolhe_errors_total[5m]) / clamp_min(rate(acolhe_requests_total[5m]), 0.001), proporÃ§Ã£o.
+- SaturaÃ§Ã£o: acolhe_active_requests, concorrÃªncia como proxy de saturaÃ§Ã£o; nÃ£o mede CPU/memÃ³ria nem percentual de capacidade. Threshold inicial 20 requer calibraÃ§Ã£o por teste de carga.
+HÃ¡ regras adicionais de latÃªncia mÃ©dia >1s e concorrÃªncia >20, ambas limiares provisÃ³rios. MÃ©tricas de tentativas/uptime complementam esses sinais, mas nÃ£o os substituem.
 
-O Docker usa ACOLHE_DB=/tmp/acolhe.db para compatibilidade com filesystem read-only. Dados são efêmeros e se perdem na recriação do container; para persistir, provisionar volume gravável UID10001, configurar ACOLHE_DB e rever retenção/privacidade. As integrações genai/vision/rpa também são copiadas à imagem.
+O Docker usa ACOLHE_DB=/tmp/acolhe.db para compatibilidade com filesystem read-only. Dados sÃ£o efÃªmeros e se perdem na recriaÃ§Ã£o do container; para persistir, provisionar volume gravÃ¡vel UID10001, configurar ACOLHE_DB e rever retenÃ§Ã£o/privacidade. As integraÃ§Ãµes genai/vision/rpa tambÃ©m sÃ£o copiadas Ã  imagem.
 
 
-## Primeira CI pública e correção de imagem (2026-11-09)
+## Primeira CI pÃºblica e correÃ§Ã£o de imagem (2026-11-09)
 
-O run https://github.com/TomazVC/Acolhe---GS8/actions/runs/42685134583, commit `624c6e77c003c88bba8edfc6a1b86f3f5403beed`, aprovou testes Python/Node, Gitleaks, Semgrep e build Docker. O Trivy bloqueou a imagem Debian 13.7: 49 ocorrências HIGH e nenhuma CRITICAL. São ocorrências por pacote, não necessariamente CVEs distintas.
+O run https://github.com/TomazVC/Acolhe---GS8/actions/runs/42685134583, commit `624c6e77c003c88bba8edfc6a1b86f3f5403beed`, aprovou testes Python/Node, Gitleaks, Semgrep e build Docker. O Trivy bloqueou a imagem Debian 13.7: 49 ocorrÃªncias HIGH e nenhuma CRITICAL. SÃ£o ocorrÃªncias por pacote, nÃ£o necessariamente CVEs distintas.
 
-Duas ocorrências em `zlib1g` tinham atualização indicada, para `1:1.3.dfsg+really1.3.1-1+deb13u1`. Outras estavam sem versão corrigida indicada ou com correção adiada pelo fornecedor. A imagem passa a aplicar as atualizações disponíveis da distribuição durante o build; a CI busca a imagem-base atual com `--pull`. Isso não garante ausência de vulnerabilidades sem correção. O bloqueio HIGH/CRITICAL continua ativo, sem `ignore-unfixed`, exceções de CVE ou supressão de erros. Consulte o run do commit atual antes de considerar a imagem aprovada. Nenhum deploy foi executado.
+Duas ocorrÃªncias em `zlib1g` tinham atualizaÃ§Ã£o indicada, para `1:1.3.dfsg+really1.3.1-1+deb13u1`. Outras estavam sem versÃ£o corrigida indicada ou com correÃ§Ã£o adiada pelo fornecedor. A imagem passa a aplicar as atualizaÃ§Ãµes disponÃ­veis da distribuiÃ§Ã£o durante o build; a CI busca a imagem-base atual com `--pull`. Isso nÃ£o garante ausÃªncia de vulnerabilidades sem correÃ§Ã£o. O bloqueio HIGH/CRITICAL continua ativo, sem `ignore-unfixed`, exceÃ§Ãµes de CVE ou supressÃ£o de erros. Consulte o run do commit atual antes de considerar a imagem aprovada. Nenhum deploy foi executado.
+
+
+### Alternativas oficiais avaliadas
+
+O run https://github.com/TomazVC/Acolhe---GS8/actions/runs/42686110502 comparou imagens oficiais com atualização de pacotes, os 61 testes Python dentro de cada container (60 aprovados e 1 ignorado por PyYAML opcional), smoke HTTP e escrita/leitura SQLite com UID 10001, e Trivy com bloqueio HIGH/CRITICAL.
+
+- `python:3.12-slim-bookworm`: testes aprovados, scan com 40 HIGH e 2 CRITICAL. Não adotada.
+- `python:3.12-alpine`: testes e smoke aprovados; scan sem achados HIGH/CRITICAL na base Alpine 3.24.4. Adotada com o digest oficial verificado `sha256:e064671ca452259bab50e8e2c7bd896e39e9a343bb06ca25234adf6fe18d0fc7`, mantendo atualização de pacotes Alpine e todas as barreiras de segurança.
+
+A CI principal agora também executa testes dentro da imagem e smoke HTTP/SQLite real antes do scan. A validação cobre o MVP de biblioteca padrão; não valida treinamento YOLO, dependências nativas opcionais, Airflow ou Databricks na imagem Alpine. Novas dependências precisam de nova verificação, pois Alpine usa musl em vez de glibc. O digest deve ser atualizado e revalidado periodicamente; um scan sem achados hoje não garante segurança futura. A branch `ci/evaluate-python-bases` preserva o experimento e não realiza deploy.

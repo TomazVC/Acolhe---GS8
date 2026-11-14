@@ -28,6 +28,15 @@ Ferramentas portateis, mesmas versoes da CI quando ha binario Windows: Terraform
 
 **Deploy automatico.** O job `deploy` agora roda em todo push na `main` que passar em todos os gates, desde que `vars.DEPLOY_ENABLED == 'true'`; o disparo manual continua disponivel. Inclui health check pos-deploy contra a URL publica. Na `main` a concorrencia nao cancela um run em andamento, para nao interromper um deploy.
 
+## URL pública (Azure, 2026-11-14)
+**https://acolhe-gs8.ambitiousbeach-2f5aaa39.canadacentral.azurecontainerapps.io**
+
+Criada pelo `terraform apply` deste diretório na assinatura Azure for Students, região `canadacentral`, porque a política da assinatura não permite `brazilsouth`. A persistência foi comprovada: os dados gravados pela API pública sobreviveram a dois reinícios do container, o segundo em réplica nova. Detalhes, os 3 defeitos encontrados no deploy real (pacote privado, provedor não registrado, subnet sem delegação) e as correções estão em `evidence/azure_deploy_20261114.md`.
+
+Custos na região usada (Retail Prices API, canadacentral): vCPU US$ 0,000034/s, memória US$ 0,000004/GiB-s, US$ 0,40/milhão de requisições, Azure Files Hot LRS US$ 0,03/GB-mês. Uso de demonstração (40 h ativas/mês): ~US$ 1,60/mês. Sempre ligado: ~US$ 28/mês. Tudo coberto pelo crédito estudantil de US$ 100. As estimativas abaixo, para brazilsouth, ficam como referência.
+
+O deploy automático da CI (`az containerapp update` em push na `main`) usa este mesmo Container App, mas ainda exige que um administrador do repositório configure o OIDC: secrets `AZURE_CLIENT_ID`/`AZURE_TENANT_ID`/`AZURE_SUBSCRIPTION_ID`, vars `AZURE_RESOURCE_GROUP=rg-acolhe-gs8`, `AZURE_CONTAINER_APP=acolhe-gs8` e `DEPLOY_ENABLED=true`. Também é preciso tornar público o pacote GHCR do repositório.
+
 ## Docker real no WSL2 (2026-11-14, Ubuntu 26.04, Docker 29.1.3, Compose 2.40)
 `bash devsecops/ci_local.sh` reproduz o job `test-and-build` da CI com as mesmas imagens e versoes (Gitleaks 8.24.2, Semgrep 1.111.0, Trivy 0.60.0). Resultado: ALL GATES PASSED, exit 0.
 - Build da imagem; 73 testes dentro da imagem (1 ignorado, PyYAML opcional); smoke HTTP `/`, `/logo.png`, `/api/lessons`, `/api/summary`, `/api/gold`, `/metrics` = 200; UID 10001 grava SQLite em `/data`.
@@ -69,7 +78,7 @@ Componentes: app Python 3.12 da biblioteca padrao em imagem Alpine fixada por di
 - Base legal e finalidade: uso academico demonstrativo. Em uso real com criancas, aplica-se o art. 14 (melhor interesse da crianca e consentimento especifico de um dos pais ou responsavel), alem de revisao do encarregado (DPO).
 - Minimizacao e retencao: so o necessario ao exercicio, sessoes apagadas apos 7 dias (`app/core.py`) e botao "Apagar minha sessao de teste" (eliminacao a pedido). O RPA e o Big Data so exportam agregados, sem identificadores (testados).
 - Seguranca (art. 46): TLS no ingress, container nao root e somente leitura, storage com firewall e criptografia, segredos fora do repositorio (Gitleaks), CSP e bloqueio de origem cruzada.
-- Transferencia internacional: Azure em `brazilsouth` mantem os dados no Brasil; o GHCR guarda apenas a imagem, sem dados pessoais.
+- Transferencia internacional (art. 33): a assinatura de estudante so permite regioes fora do Brasil, e o deploy esta em `canadacentral` (Canada). Ha transferencia internacional dos dados pseudonimos de sessao. Mitigacoes: dados minimos sem identificacao direta, retencao de 7 dias, criptografia em repouso e em transito, firewall do storage. Para uso real com criancas, usar `brazilsouth` numa assinatura que permita essa regiao, ou formalizar a base do art. 33 (por exemplo, clausulas-padrao contratuais). O GHCR guarda apenas a imagem, sem dados pessoais.
 - Pendente antes de uso real: autenticacao de educadores, protecao do `/metrics`, RIPD (relatorio de impacto), termo de consentimento e politica de privacidade revisados por juridico.
 
 ## Pipeline

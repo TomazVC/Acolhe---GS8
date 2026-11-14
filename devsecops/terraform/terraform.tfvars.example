@@ -1,6 +1,7 @@
 # EXAMPLE ONLY. Copy locally, never commit real subscription IDs.
 subscription_id = "00000000-0000-0000-0000-000000000000"
-location        = "brazilsouth"
+# Azure for Students blocks brazilsouth; allowed: northcentralus, canadacentral, spaincentral, italynorth, southafricanorth
+location        = "canadacentral"
 name            = "acolhe-demo"
 image           = "ghcr.io/OWNER/acolhe@sha256:REPLACE_WITH_VERIFIED_DIGEST"
 # Globally unique, 3-24 lowercase letters/digits

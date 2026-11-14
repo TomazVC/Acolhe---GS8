@@ -50,14 +50,26 @@ resource "azurerm_subnet" "aca" {
   name                 = "snet-aca"
   resource_group_name  = azurerm_resource_group.app.name
   virtual_network_name = azurerm_virtual_network.app.name
-  address_prefixes     = ["10.20.0.0/23"] # consumption-only environments require /23
+  address_prefixes     = ["10.20.0.0/23"]
   service_endpoints    = ["Microsoft.Storage"]
+  # Azure now requires the environment subnet to be delegated (workload profiles environment).
+  delegation {
+    name = "aca"
+    service_delegation {
+      name    = "Microsoft.App/environments"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
 }
 resource "azurerm_container_app_environment" "app" {
   name                     = "cae-${var.name}"
   location                 = azurerm_resource_group.app.location
   resource_group_name      = azurerm_resource_group.app.name
   infrastructure_subnet_id = azurerm_subnet.aca.id
+  workload_profile {
+    name                  = "Consumption" # serverless, billed per use, scales to zero
+    workload_profile_type = "Consumption"
+  }
 }
 # Persistent storage for SQLite: Azure Files share mounted at /data.
 # Safe only because max_replicas = 1 (single writer); nobrl makes SQLite locking work over SMB.
@@ -95,6 +107,7 @@ resource "azurerm_container_app" "app" {
   container_app_environment_id = azurerm_container_app_environment.app.id
   resource_group_name          = azurerm_resource_group.app.name
   revision_mode                = "Single"
+  workload_profile_name        = "Consumption"
   template {
     min_replicas = 0
     max_replicas = 1 # SQLite: never scale above one writer

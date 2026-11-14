@@ -1,6 +1,6 @@
 # Databricks notebook source
-# Prepared for Databricks Runtime with Delta; not run in this delivery.
-# Set a writable UC volume and schema. Upload normalized CSVs before running.
+# Databricks Runtime / serverless with Delta. Defaults target Free Edition (catalog "workspace").
+# Run 00_setup_volume first; then run with batch_date=2026-11-05, 2026-11-06 and repeat to show idempotency.
 # COMMAND ----------
 from delta.tables import DeltaTable
 from pyspark.sql import functions as F, Window
@@ -8,9 +8,9 @@ import re,json
 from pathlib import Path
 from datetime import date,datetime,timezone
 
-dbutils.widgets.text('input_path','/Volumes/main/acolhe/data/input')
-dbutils.widgets.text('output_path','/Volumes/main/acolhe/data/output')
-dbutils.widgets.text('schema','main.acolhe')
+dbutils.widgets.text('input_path','/Volumes/workspace/acolhe/data/input')
+dbutils.widgets.text('output_path','/Volumes/workspace/acolhe/data/output')
+dbutils.widgets.text('schema','workspace.acolhe')
 dbutils.widgets.text('batch_date','2026-11-05')
 input_path=dbutils.widgets.get('input_path').rstrip('/')
 output_path=dbutils.widgets.get('output_path').rstrip('/')

@@ -1,0 +1,8 @@
+indicator_id,reference_year,territory,value,unit,label_pt,page
+refugee_recognized_children_0_11_pct,2025,BR,24.4,percent,Participacao de criancas 0-11 anos entre refugiados reconhecidos,20
+refugee_recognized_total,2025,BR,9200.0,persons,Solicitacoes de refugio deferidas,19
+refugee_requests_change_pct,2025,BR,10.9,percent,Variacao das solicitacoes de refugio vs 2024,16
+refugee_requests_children_0_11_pct,2025,BR,16.0,percent,Participacao de criancas 0-11 anos entre solicitantes de refugio,17
+refugee_requests_sp_change_pct,2025,SP,-2.5,percent,Variacao das solicitacoes de refugio em Sao Paulo/SP vs 2024,17
+refugee_requests_total,2025,BR,75600.0,persons,Solicitacoes de reconhecimento da condicao de refugiado,16
+residence_regularized_total,2025,BR,199600.0,persons,Imigrantes regularizados (registros de residencia),12

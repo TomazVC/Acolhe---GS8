@@ -84,7 +84,7 @@ def _exists(p):
     try: dbutils.fs.ls(p); return True
     except Exception: return False
 if _exists(f'{official_dir}/gold_official_context.csv'):
-    for table,file,key in (('official_indicator','gold_official_context.csv','t.indicator_id=s.indicator_id AND t.territory=s.territory AND t.reference_year=s.reference_year'),
+    for table,file,key in (('gold_official_context','gold_official_context.csv','t.indicator_id=s.indicator_id AND t.territory=s.territory AND t.reference_year=s.reference_year'),
                            ('dim_municipality','municipalities_sp.csv','t.municipality_id=s.municipality_id')):
         if not _exists(f'{official_dir}/{file}'): continue
         bronze_o=f'{namespace}.bronze_{table}'
@@ -96,7 +96,7 @@ if _exists(f'{official_dir}/gold_official_context.csv'):
         if not spark.catalog.tableExists(target): src.limit(0).write.format('delta').saveAsTable(target)
         DeltaTable.forName(spark,target).alias('t').merge(src.alias('s'),key).whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
         print(table, spark.table(target).count(), 'rows')
-    oc=spark.table(f'{namespace}.official_indicator').collect()
+    oc=spark.table(f'{namespace}.gold_official_context').collect()
     summary['official_context']={'synthetic':False,'reference_year':2025,'indicators':[r.asDict() for r in oc],
         'note':'Indicadores oficiais de contexto; nao somados a camada sintetica.'}
 Path(output_path).mkdir(parents=True,exist_ok=True)

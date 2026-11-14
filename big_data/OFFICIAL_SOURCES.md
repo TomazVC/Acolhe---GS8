@@ -6,6 +6,10 @@
 
 Os arquivos ficam em official_snapshots/raw/<fonte>/<SHA256>.<extensao>; manifests registram URL, hora real UTC, status HTTP, formato, hash, tamanho, finalidade e situacao da licenca. O hash endereca o conteudo: coletas iguais nao duplicam o bruto; cada coleta gera manifesto proprio. O CSV IBGE e uma proiecao com colunas territoriais permitidas. Nenhum nome/documento de migrante foi adquirido. Os dois CSVs de demanda/servicos e summary.json do MVP continuam demonstrativos, em pastas distintas.
 
+## Revisao de licencas em 2026-11-14
+- IBGE: o Plano de Dados Abertos IBGE 2024-2025 (https://www.ibge.gov.br/np_download/novoportal/documentos_institucionais/Plano_de_Dados_Abertos_IBGE_2024_2025.pdf) lista na p.54 a "Divisao Territorial Brasileira" entre as bases a publicar como dados abertos. Nas p.59-60, define dados abertos como dados sob licenca aberta, com livre reuso e, no maximo, exigencia de credito a autoria. A Biblioteca do IBGE tambem permite usar dados de suas publicacoes desde que o IBGE seja citado como fonte. Status: dado aberto com atribuicao obrigatoria. Citacao usada: "IBGE, API de Localidades (servicodados.ibge.gov.br), acesso em 2026-11-14". Nao foi encontrado documento de licenca especifico da API; o manifesto registra isso.
+- OBMigra: a p.4 do proprio relatorio permite reproduzir texto e dados citando a fonte, com reproducoes comerciais proibidas. A pagina oficial declara CC BY-ND 3.0. Por isso extraimos fatos numericos com citacao e pagina, sem publicar o PDF nem tabelas derivadas como obra adaptada. Uso academico, nao comercial.
+
 ## Fontes, autoria e licencas
 IBGE: https://servicodados.ibge.gov.br/api/v1/localidades/estados/35/municipios . Documentacao: https://servicodados.ibge.gov.br/api/docs/localidades . Acesso tecnico confirmado, mas NAO foi localizada licenca formal especifica da API em fonte oficial. Nao rotulamos CC BY ou dominio publico. A referencia fica local para pesquisa; conferir termos antes de redistribuir. Licencas de jQuery/Bootstrap presentes no HTML da documentacao nao sao licencas dos dados.
 

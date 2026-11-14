@@ -1,0 +1,24 @@
+# Local Airflow 3 for evidence (Linux/WSL2 + Docker). Run from the repo root:
+#   docker compose -f big_data/airflow/compose.airflow.yaml up -d
+#   UI: http://localhost:8081   (local only; all users are admin, no login)
+# Not for production: SQLite metadata DB + SequentialExecutor-equivalent standalone mode.
+services:
+  airflow:
+    image: apache/airflow:3.1.0-python3.12
+    command: standalone
+    ports:
+      - "127.0.0.1:8081:8080"
+    environment:
+      ACOLHE_ROOT: /opt/acolhe
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/acolhe/big_data/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"
+      AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "10"
+      # Dev/test only (official image feature): PDF extraction for integrate_official.
+      # For production, bake big_data/requirements-official.txt into a derived image.
+      _PIP_ADDITIONAL_REQUIREMENTS: "pymupdf==2.1"
+    volumes:
+      - ../..:/opt/acolhe
+      - airflow-home:/opt/airflow
+volumes:
+  airflow-home:

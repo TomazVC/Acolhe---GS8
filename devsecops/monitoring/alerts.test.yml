@@ -1,0 +1,44 @@
+# promtool test rules devsecops/monitoring/alerts.test.yml
+rule_files:
+  - alerts.yml
+evaluation_interval: 1m
+tests:
+  - name: indisponibilidade dispara apos 2 minutos
+    interval: 1m
+    input_series:
+      - series: 'up{job="acolhe",instance="app:8080"}'
+        values: '1 1 0 0 0 0'
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: AcolheUnavailable
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: AcolheUnavailable
+        exp_alerts:
+          - exp_labels: {severity: critical, job: acolhe, instance: "app:8080"}
+            exp_annotations: {summary: "Acolhe indisponivel por mais de 2 minutos"}
+  - name: taxa de erros acima de 5 por cento
+    interval: 1m
+    input_series:
+      # 60 req/min with 10 errors/min = ~16.7% error rate
+      - series: 'acolhe_requests_total{job="acolhe",instance="app:8080"}'
+        values: '0+60x20'
+      - series: 'acolhe_errors_total{job="acolhe",instance="app:8080"}'
+        values: '0+10x20'
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: AcolheErrorRate
+        exp_alerts:
+          - exp_labels: {severity: warning, job: acolhe, instance: "app:8080"}
+            exp_annotations: {summary: "Taxa de erros superior a 5%"}
+  - name: trafego saudavel nao alerta
+    interval: 1m
+    input_series:
+      - series: 'acolhe_requests_total{job="acolhe",instance="app:8080"}'
+        values: '0+60x20'
+      - series: 'acolhe_errors_total{job="acolhe",instance="app:8080"}'
+        values: '0+0x20'
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: AcolheErrorRate
+        exp_alerts: []

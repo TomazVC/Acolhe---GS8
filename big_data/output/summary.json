@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-07T13:12:22.875554+00:00",
+  "generated_at": "2026-11-14T02:50:19.689208+00:00",
   "synthetic": true,
   "source_batches": 4,
   "totals": {
@@ -40,5 +40,96 @@
       "demand",
       "services"
     ]
+  },
+  "official_context": {
+    "synthetic": false,
+    "reference_year": 2025,
+    "indicators": [
+      {
+        "indicator_id": "refugee_recognized_children_0_11_pct",
+        "reference_year": 2025,
+        "territory": "BR",
+        "value": 24.4,
+        "unit": "percent",
+        "label_pt": "Participacao de criancas 0-11 anos entre refugiados reconhecidos",
+        "page": 20
+      },
+      {
+        "indicator_id": "refugee_recognized_total",
+        "reference_year": 2025,
+        "territory": "BR",
+        "value": 9200.0,
+        "unit": "persons",
+        "label_pt": "Solicitacoes de refugio deferidas",
+        "page": 19
+      },
+      {
+        "indicator_id": "refugee_requests_change_pct",
+        "reference_year": 2025,
+        "territory": "BR",
+        "value": 10.9,
+        "unit": "percent",
+        "label_pt": "Variacao das solicitacoes de refugio vs 2024",
+        "page": 16
+      },
+      {
+        "indicator_id": "refugee_requests_children_0_11_pct",
+        "reference_year": 2025,
+        "territory": "BR",
+        "value": 16.0,
+        "unit": "percent",
+        "label_pt": "Participacao de criancas 0-11 anos entre solicitantes de refugio",
+        "page": 17
+      },
+      {
+        "indicator_id": "refugee_requests_sp_change_pct",
+        "reference_year": 2025,
+        "territory": "SP",
+        "value": -2.5,
+        "unit": "percent",
+        "label_pt": "Variacao das solicitacoes de refugio em Sao Paulo/SP vs 2024",
+        "page": 17
+      },
+      {
+        "indicator_id": "refugee_requests_total",
+        "reference_year": 2025,
+        "territory": "BR",
+        "value": 75600.0,
+        "unit": "persons",
+        "label_pt": "Solicitacoes de reconhecimento da condicao de refugiado",
+        "page": 16
+      },
+      {
+        "indicator_id": "residence_regularized_total",
+        "reference_year": 2025,
+        "territory": "BR",
+        "value": 199600.0,
+        "unit": "persons",
+        "label_pt": "Imigrantes regularizados (registros de residencia)",
+        "page": 12
+      }
+    ],
+    "territory": {
+      "state_code": "SP",
+      "municipalities": 645
+    },
+    "provenance": {
+      "obmigra": {
+        "citation": "CAVALCANTI, L; OLIVEIRA, T. Dados Consolidados da Imigracao no Brasil 2025. Serie Migracoes. OBMigra/MJSP. Brasilia, DF: OBMigra, 2026. ISSN 2448-1076",
+        "sha256": "36bf2281c1e1e791e2065deb729645023935ac7b10eb97088b156ef25a4d7340",
+        "retrieval_days_utc": [
+          "2026-11-14"
+        ],
+        "url": "https://www.gov.br/mj/pt-br/assuntos/seus-direitos/migracoes/portal-de-imigracao-laboral/obmigra-1/relatorios-obmigra/dados-consolidados/2025/Dados2025.pdf"
+      },
+      "ibge": {
+        "sha256": "c06b7327c3bf7475d0c63c90c5f8c9122464fd0ed84bc98709a2a7f82649d14b",
+        "retrieval_days_utc": [
+          "2026-11-14"
+        ],
+        "url": "https://servicodados.ibge.gov.br/api/v1/localidades/estados/35/municipios"
+      }
+    },
+    "note": "Indicadores oficiais nacionais/estaduais de contexto; nao descrevem usuarios do Acolhe e nao sao somados a camada sintetica."
   }
 }

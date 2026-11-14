@@ -50,14 +50,14 @@ class Handler(BaseHTTPRequestHandler):
    target=ROOT/'big_data/output/summary.json'
    return self.reply(json.loads(target.read_text(encoding='utf-8')) if target.exists() else {'status':'not_generated','synthetic':True})
   if path=='/api/automation':
-   target=ROOT/'rpa/output/progress.json'
+   target=self.server.automation_path
    return self.reply(json.loads(target.read_text(encoding='utf-8')) if target.exists() else {'status':'not_generated'})
   if path=='/api/vision/status':
    from vision.service import status
    return self.reply(status())
   if path=='/metrics':
    with self.server.metrics_lock: m=dict(self.server.metrics)
-   metrics={'acolhe_requests_total':m['requests'],'acolhe_errors_total':m['errors'],'acolhe_request_duration_seconds_sum':m['duration'],'acolhe_request_duration_seconds_count':m['requests'],'acolhe_active_requests':m['active'],'acolhe_uptime_seconds':time.monotonic()-self.server.started,'acolhe_attempts_total':self.server.store.summary()['attempts']}
+   metrics={'acolhe_requests_total':m['requests'],'acolhe_errors_total':m['errors'],'acolhe_request_duration_seconds_sum':m['duration'],'acolhe_request_duration_seconds_count':m['requests'],'acolhe_active_requests':max(0,m['active']-1),'acolhe_uptime_seconds':time.monotonic()-self.server.started,'acolhe_attempts_total':self.server.store.summary()['attempts']}
    return self.reply((''.join(f'{k} {v}\n' for k,v in metrics.items())).encode(),ctype='text/plain; version=0.0.4; charset=utf-8')
   candidate=(STATIC/('index.html' if path=='/' else path.lstrip('/'))).resolve()
   if not candidate.is_relative_to(STATIC.resolve()) or not candidate.is_file(): return self.reply({'error':'Não encontrado'},404)
@@ -80,8 +80,9 @@ class Handler(BaseHTTPRequestHandler):
    return self.reply(answer(question,language))
   return self.reply({'error':'Não encontrado'},404)
 
-def create_server(host='127.0.0.1',port=8080,db_path=None):
+def create_server(host='127.0.0.1',port=8080,db_path=None,automation_path=None):
  server=ThreadingHTTPServer((host,port),Handler); server.daemon_threads=True
+ server.automation_path=Path(automation_path or os.environ.get('ACOLHE_RPA_REPORT',str(ROOT/'rpa/output/progress.json')))
  server.store=Store(db_path or Path(os.environ.get('ACOLHE_DB',str(ROOT/'data/acolhe.db'))))
  server.metrics={'requests':0,'errors':0,'duration':0.0,'active':0}; server.metrics_lock=threading.Lock(); server.started=time.monotonic()
  return server

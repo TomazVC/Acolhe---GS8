@@ -34,7 +34,8 @@ class PipelineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d); create_demo(p/'input'); run(p/'input',p/'output')
             queries=Path(__file__).with_name('queries.sql').read_text(encoding='utf-8')
-            statements=[statement for statement in queries.split(';') if 'SELECT' in statement]
+            statements=[statement for statement in queries.split(';') if 'SELECT' in statement
+                        and 'gold_official_context' not in statement and 'dim_municipality' not in statement]
             self.assertEqual(len(statements),5)
             with closing(sqlite3.connect(p/'output'/'warehouse.db')) as db:
                 for statement in statements:

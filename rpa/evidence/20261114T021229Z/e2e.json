@@ -1,0 +1,68 @@
+{
+  "steps": [
+    {
+      "step": "0_mvp_before_robot",
+      "at": "2026-11-14T02:12:28.610142+00:00",
+      "automation": {
+        "status": "not_generated"
+      }
+    },
+    {
+      "step": "1_success",
+      "at": "2026-11-14T02:12:28.655890+00:00",
+      "decision": {
+        "status": "progresso_adequado",
+        "action": "Sem intervencao necessaria.",
+        "lessons_to_review": []
+      },
+      "totals": {
+        "sessions": 1,
+        "attempts": 5,
+        "correct": 5,
+        "accuracy": 1.0
+      },
+      "mvp": {
+        "sessions": 1,
+        "attempts": 5,
+        "correct": 5,
+        "accuracy": 1.0
+      }
+    },
+    {
+      "step": "2_decision",
+      "at": "2026-11-14T02:12:28.675413+00:00",
+      "decision": {
+        "status": "reforco_recomendado",
+        "action": "Revisar com educadores as licoes abaixo da meta de acerto.",
+        "lessons_to_review": [
+          "mobilidade"
+        ]
+      },
+      "mvp_decision": {
+        "status": "reforco_recomendado",
+        "action": "Revisar com educadores as licoes abaixo da meta de acerto.",
+        "lessons_to_review": [
+          "mobilidade"
+        ]
+      }
+    },
+    {
+      "step": "3_failure",
+      "at": "2026-11-14T02:12:28.697762+00:00",
+      "error": "FileNotFoundError",
+      "db_created": false,
+      "mvp_still_serves": "reforco_recomendado"
+    }
+  ],
+  "robot_log": [
+    "2026-11-13 23:12:28,628 INFO report_started",
+    "2026-11-13 23:12:28,629 INFO decision status=progresso_adequado review=-",
+    "2026-11-13 23:12:28,630 INFO report_completed attempts=5",
+    "2026-11-13 23:12:28,668 INFO report_started",
+    "2026-11-13 23:12:28,669 INFO decision status=reforco_recomendado review=mobilidade",
+    "2026-11-13 23:12:28,670 INFO report_completed attempts=8",
+    "2026-11-13 23:12:28,676 INFO report_started",
+    "2026-11-13 23:12:28,676 ERROR report_failed type=FileNotFoundError"
+  ],
+  "progress_md": "# Relatorio local Acolhe\n\nSessoes: 2\nTentativas: 8\nAcertos: 5\nTaxa de acerto: 62.5%\n\n## Decisao: reforco_recomendado\nRevisar com educadores as licoes abaixo da meta de acerto.\n\nLicoes para revisar:\n- mobilidade\n\nDados agregados. Nao enviado a terceiros.\n"
+}

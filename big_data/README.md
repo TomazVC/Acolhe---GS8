@@ -3,6 +3,31 @@
 ## Estado e honestidade dos dados
 Executado localmente em Python 3.12 + SQLite. Os indicadores de demanda/servicos do MVP sao inteiramente SINTETICOS: nao representam refugiados reais, demanda real nem capacidade de atendimento. Duas fontes logicas de demonstracao (`demand` e `services`), nao duas bases publicas ja integradas. Referencias oficiais adicionais foram adquiridas separadamente em official_snapshots; veja OFFICIAL_SOURCES.md. Nao houve execucao Airflow ou Databricks, nem criacao de conta/cluster. Isso permanece pendente para evidencia academica.
 
+## Fontes reais integradas (2026-11-14)
+Tres fontes: `demand`/`services` (demonstrativas, synthetic=true) e duas externas reais, OBMigra/MJSP 2025 e IBGE Localidades.
+```
+python -B -m big_data.collect_official --source all      # coleta real (manifesto com dia UTC)
+python -B -m big_data.pipeline                           # medalhao demonstrativo
+python -B -m big_data.official_integration               # integra OBMigra + IBGE
+```
+`official_integration.py` le o snapshot mais recente, confere o SHA-256 do manifesto e extrai 7 indicadores do texto do PDF (as tabelas e graficos do relatorio sao imagens, sem texto extraivel). Cada indicador tem pagina, trecho de evidencia e regex ancorada: se o texto mudar, a extracao falha, sem chute nem OCR. Valores obtidos: 75.600 pedidos de refugio em 2025 (+10,9%), 16,0% criancas de 0 a 11 anos, 9.200 deferidos (24,4% criancas), 199.600 regularizados, Sao Paulo/SP -2,5%. O IBGE vira `dim_municipality` (645 municipios de SP).
+Tabelas: `official_batches` (lotes por hash e dia), `silver_official_indicator` (UPSERT), `dim_municipality`, `gold_official_context`. O `summary.json` ganha `official_context` com synthetic=false; o selo synthetic=true do topo continua valendo para demanda/servicos, e os numeros oficiais nunca sao somados a eles. Consultas 6 a 8 de `queries.sql` usam essas tabelas. Uma reexecucao mantem as contagens (7 / 645 / 2).
+Base de reuso: a p.4 do relatorio permite reproduzir texto e dados citando a fonte, sem fins comerciais. O PDF bruto continua fora do Git.
+Segundo dia real: coleta feita em 2026-11-14 UTC (IBGE HTTP 200, 645 municipios, sha256 c06b7327...; OBMigra HTTP 200, 11.428.175 bytes, sha256 36bf2281...). Os manifestos de 2026-11-07 ficaram na maquina da primeira coleta: copie-os para `official_snapshots/manifests` para que `retrieval_days_utc` mostre os dois dias.
+
+## Airflow: execucao real (2026-11-14, WSL2 + Docker)
+```
+docker compose -f big_data/airflow/compose.airflow.yaml up -d     # UI: http://localhost:8081
+bash big_data/airflow/run_evidence.sh 2                            # dispara os DAGs e imprime estados e contagens
+```
+Imagem oficial `apache/airflow:3.1.0-python3.12` em modo standalone, montando o repositorio e lendo os DAGs de `big_data/airflow`. Log completo em `evidence/airflow_run_20261114.log`.
+- `acolhe_medallion`, execucao 1 e execucao 2: dag run = success. `ingest_demand` e `ingest_services` comecaram com 1 ms de diferenca (paralelas), depois `medallion` e `integrate_official`, todas success.
+- Contagens identicas nas duas execucoes: lotes=4, bronze=8, prata=4, quarentena=0, fato=4, lotes oficiais=2, indicadores=7, municipios=645, logo nao houve duplicidade. O warehouse ja tinha os lotes antes da execucao 1; as contagens lote a lote estao em `EVIDENCIAS.md`.
+- `acolhe_official_snapshots`: `collect_ibge_territory` e `collect_obmigra_report` em paralelo, depois `summarize`, todas success (coleta real pela internet).
+- A primeira execucao real revelou dois defeitos, ja corrigidos: EPERM no `shutil.copy2` (o worker roda como UID 50000) e PyMuPDF ausente na imagem (`requirements-official.txt`). Detalhes em VERIFICATION.md.
+- `test_airflow_dag.py` continua cobrindo a logica das tarefas na CI, sem scheduler.
+- Para o PDF, capture o grafo e a aba de logs em http://localhost:8081 (acesso local, sem login).
+
 ## Rodar e testar
 Na raiz acolhe:
 ```

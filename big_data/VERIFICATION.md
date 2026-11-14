@@ -21,3 +21,17 @@ Nao executado: scheduler Airflow, ambiente Spark/Databricks, importacao BPMN em 
 - Coleta real em 2026-11-07: IBGE/SP 645 municipios, 284370 bytes; OBMigra PDF agregado 11428175 bytes. Ambos HTTP 200; hashes recalculados conferem com manifestos.
 - Referencias oficiais mantidas fora do ouro demonstrativo. Nenhuma alegacao de dois dias reais, licenca IBGE verificada, ou segunda base tabular ja integrada.
 - Nao executado Airflow ou Databricks. Contratos estaticos nao substituem testes de runtime. Segundo dia real, licencas especificas e harmonizacao tabular continuam pendentes em OFFICIAL_SOURCES.md.
+
+
+## Verificacao Big Data + RPA + DevSecOps - 2026-11-14 UTC
+Windows 11, Python 3.12.10, Node 22.23.5, sem Docker nem WSL.
+- `python -B -m unittest discover`: 73 testes, todos aprovados (eram 61); inclui o gerador de evidencias. Checklist completo em `docs/CHECKLIST_BigData_RPA_DevSecOps.md`. Novos: integracao oficial (4), execucao do DAG Airflow (2), robo RPA (5: regra de decisao, sessao sem tentativas, fluxo completo, agendamento embutido), metricas HTTP (1).
+- `node --test tests/frontend.test.cjs`: 11/11.
+- Pipeline demonstrativo executado duas vezes: bronze=8, prata=4, lotes=4, quarentena=0 nas duas; as 5 consultas ouro retornam linhas.
+- Coleta oficial do segundo dia real: 2026-11-14T02:02Z. IBGE HTTP 200, 645 municipios, 284.370 bytes; OBMigra HTTP 200, 11.428.175 bytes. Mesmos tamanhos da coleta de 2026-11-07.
+- Integracao oficial executada duas vezes: 7 indicadores / 645 municipios / 2 lotes nas duas; consultas 6 a 8 executadas.
+- Airflow 3.1.0 instalado: DAG analisado, topologia confirmada (2 ramos paralelos -> medallion -> integrate_official). `airflow db migrate` falha no Windows (`ModuleNotFoundError: fcntl`). Execucao no scheduler continua pendente e exige WSL2/Docker.
+- Databricks: nao executado (exige conta e upload manual ao Volume). O notebook ganhou uma celula para os CSVs oficiais.
+- Monitoramento ao vivo (Prometheus 3.2.1 nativo): 12.708 requisicoes em 70 s; latencia media 0,015 s, trafego 174 req/s, erros 0, saturacao 1 (antes da correcao do gauge). App parado: `AcolheUnavailable` passou a pending em 2026-11-14T02:16:42Z e depois a firing (severity=critical, value 0). `promtool test rules`: SUCCESS.
+- Airflow real (WSL2 + Docker, imagem oficial apache/airflow:3.1.0-python3.12, `big_data/airflow/compose.airflow.yaml`): a primeira execucao real FALHOU em `ingest_demand`/`ingest_services` com `PermissionError [Errno 1]` em `acolhe_dag.py:23 -> shutil.copy2 -> copystat`. O worker roda como UID 50000 e o arquivo de staging pertencia a outro UID; copiar timestamps e permissoes exige ser dono. O teste com stub nao pegava isso. Corrigido com copia apenas do conteudo, atomica, que pula arquivos identicos (SHA-256), e com o teste de regressao `test_ingest_never_copies_metadata`. `big_data/staging/` entrou no .gitignore.
+- Defeitos encontrados e corrigidos: `exec()` em teste detectado pelo Semgrep ampliado (excecao revisada); gauge de saturacao contava o proprio scrape; robo exportava `correct: null` em sessao sem tentativas; README DevSecOps com UTF-8 duplamente codificado (28 linhas); banco do container efemero; deploy apenas manual.

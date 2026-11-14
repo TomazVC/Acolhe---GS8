@@ -75,6 +75,30 @@ summary={'schema_version':1,'generated_at':datetime.now(timezone.utc).isoformat(
  'by_region':grouped('region'),'by_language':grouped('language'),
  'quality':{'rejected':spark.table(f'{namespace}.quarantine').count()},
  'provenance':{'mode':'Databricks normalized CSV import','sources':['demand','services']}}
+# COMMAND ----------
+# Real official context (OBMigra 2025 + IBGE SP). Databricks Free has no Airflow
+# connection: upload big_data/output/gold_official_context.csv and
+# official_snapshots/normalized/<day>/municipalities_sp.csv to {input_path}/official/.
+official_dir=f'{input_path}/official'
+def _exists(p):
+    try: dbutils.fs.ls(p); return True
+    except Exception: return False
+if _exists(f'{official_dir}/gold_official_context.csv'):
+    for table,file,key in (('official_indicator','gold_official_context.csv','t.indicator_id=s.indicator_id AND t.territory=s.territory AND t.reference_year=s.reference_year'),
+                           ('dim_municipality','municipalities_sp.csv','t.municipality_id=s.municipality_id')):
+        if not _exists(f'{official_dir}/{file}'): continue
+        bronze_o=f'{namespace}.bronze_{table}'
+        spark.sql(f"CREATE TABLE IF NOT EXISTS {bronze_o} USING DELTA")
+        spark.sql(f"""COPY INTO {bronze_o} FROM '{official_dir}/{file}' FILEFORMAT = CSV
+          FORMAT_OPTIONS ('header'='true','inferSchema'='true') COPY_OPTIONS ('mergeSchema'='true','force'='false')""")
+        src=spark.table(bronze_o).dropDuplicates()
+        target=f'{namespace}.{table}'
+        if not spark.catalog.tableExists(target): src.limit(0).write.format('delta').saveAsTable(target)
+        DeltaTable.forName(spark,target).alias('t').merge(src.alias('s'),key).whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
+        print(table, spark.table(target).count(), 'rows')
+    oc=spark.table(f'{namespace}.official_indicator').collect()
+    summary['official_context']={'synthetic':False,'reference_year':2025,'indicators':[r.asDict() for r in oc],
+        'note':'Indicadores oficiais de contexto; nao somados a camada sintetica.'}
 Path(output_path).mkdir(parents=True,exist_ok=True)
 Path(output_path,'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
 display(fact)

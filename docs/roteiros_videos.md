@@ -12,21 +12,25 @@ Mostrar nome do projeto e objetivo: consolidar o progresso agregado do banco loc
 
 Mostrar o banco de demonstração criado pelo MVP, sem revelar identificadores de sessões. Explicar as entradas: banco SQLite existente e pasta de saída. Indicar que o acesso é de leitura e que a pasta precisa permitir gravação. Identificar os dados como sintéticos.
 
-## 0min55s a 1min40s Execução válida
+## 0min55s a 1min30s Atividade no app e sucesso
 
-Executar, na raiz do projeto:
+Com o MVP aberto (`python -B -m app.server`), mostrar o painel "Acompanhamento automático" ainda sem relatório. Responder as cinco lições corretamente. Executar, na raiz do projeto:
 
-`python -m rpa.robot --db data/acolhe.db --output rpa/output`
+`python -B -m rpa.robot --db data/acolhe.db --output rpa/output`
 
-Mostrar o código de saída, `progress.json`, `progress.md` e `robot.log`. Comparar um agregado com o estado conhecido do banco. Mostrar data de geração e os registros `report_started` e `report_completed`. Explicar que sessão não é pessoa e taxa de acerto não comprova aprendizagem.
+Mostrar código de saída 0, `progress.md` com a decisão `progresso_adequado` e `robot.log` com `report_started`, `decision` e `report_completed`. Clicar em "Atualizar painel": os totais aparecem no MVP. Explicar que sessão não é pessoa e que taxa de acerto não comprova aprendizagem.
 
-## 1min40s a 2min25s Falha controlada
+## 1min30s a 2min00s Decisão
 
-Executar com um caminho de banco inexistente e uma pasta de saída separada de teste. Mostrar saída de erro e `report_failed`. Explicar como o operador identifica e corrige o caminho. Não apresentar um relatório antigo como resultado da execução que falhou.
+Em outra sessão (ES), errar três vezes a lição "Caminho seguro". Rodar o robô de novo. Mostrar a decisão `reforco_recomendado` com `mobilidade` para revisão no log, em `progress.md` e no painel ("Revisar: mobilidade"). Explicar a regra: menos de 60% de acerto com pelo menos 3 tentativas.
 
-## 2min25s a 2min50s Limites e encerramento
+## 2min00s a 2min30s Falha controlada
 
-Mostrar a ligação entre processo, código, saídas e log. Dizer se o agendamento ainda está pendente. Não alegar envio semanal por e-mail: o fluxo atual gera arquivos locais. Terminar até 2min50s para margem.
+Executar com `--db nao_existe.db`. Mostrar a mensagem `RPA failed`, o código de saída 1 e `report_failed` no log, e que nenhum banco foi criado. O painel continua com o último relatório válido. Explicar como o operador corrige o caminho.
+
+## 2min30s a 2min50s Agendamento e encerramento
+
+Mostrar `python -B -m rpa.robot --every 3600` como agendamento embutido e o comando `schtasks` documentado no README. Mostrar o BPMN no bpmn.io. Não alegar envio por e-mail: o fluxo gera arquivos locais e alimenta o MVP. Alternativa sem gravar a tela do app: `python -B -m rpa.demo_e2e --evidence rpa/evidence` executa os três cenários de uma vez.
 
 ## Evidências para guardar
 

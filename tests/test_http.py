@@ -18,6 +18,13 @@ class HttpTests(unittest.TestCase):
   session=json.load(self.request('/api/sessions',{'language':'es'}))
   attempt=json.load(self.request('/api/attempts',{'session_id':session['id'],'lesson_id':'casa','option':0,'request_id':'one'}))
   self.assertTrue(attempt['correct']); self.assertTrue(attempt['robot']['simulated'])
+ def test_metrics_four_golden_signals_idle_saturation_is_zero(self):
+  self.request('/api/health').read()
+  with urllib.request.urlopen(self.base+'/metrics') as r: text=r.read().decode()
+  m=dict(line.split(' ') for line in text.strip().splitlines())
+  for k in ('acolhe_request_duration_seconds_sum','acolhe_requests_total','acolhe_errors_total','acolhe_active_requests'): self.assertIn(k,m)
+  self.assertEqual(float(m['acolhe_active_requests']),0)  # the scrape must not count itself
+  self.assertGreaterEqual(float(m['acolhe_requests_total']),2)
  def test_cross_origin_blocked(self):
   with self.assertRaises(urllib.error.HTTPError) as caught: self.request('/api/sessions',{'language':'pt'},{'Content-Type':'application/json','Origin':'https://evil.example'})
   self.assertEqual(caught.exception.code,403)

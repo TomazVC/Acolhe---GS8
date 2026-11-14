@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Acolhe" targetNamespace="https://acolhe.local/rpa">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Acolhe" targetNamespace="https://acolhe.local/rpa">
 <process id="RelatorioAcolhe" name="Gerar relatorio agregado local" isExecutable="false">
-<startEvent id="start"/><task id="validate" name="Validar banco e ler agregados"/><exclusiveGateway id="decision" name="Leitura concluida?" default="failure"/><task id="write" name="Gerar JSON e Markdown"/><task id="successlog" name="Registrar sucesso"/><task id="errorlog" name="Registrar erro"/><endEvent id="success" name="Sucesso"/><endEvent id="error" name="Falha"/>
-<sequenceFlow id="s1" sourceRef="start" targetRef="validate"/><sequenceFlow id="s2" sourceRef="validate" targetRef="decision"/><sequenceFlow id="ok" name="Sim" sourceRef="decision" targetRef="write"><conditionExpression xsi:type="tFormalExpression">read_ok</conditionExpression></sequenceFlow><sequenceFlow id="failure" name="Nao" sourceRef="decision" targetRef="errorlog"/><sequenceFlow id="s3" sourceRef="write" targetRef="successlog"/><sequenceFlow id="s4" sourceRef="successlog" targetRef="success"/><sequenceFlow id="s5" sourceRef="errorlog" targetRef="error"/>
-</process></definitions>
+  <startEvent id="start" name="Agenda (--every) ou disparo manual"/>
+  <task id="validate" name="Validar banco e ler agregados (somente leitura)"/>
+  <exclusiveGateway id="readok" name="Leitura concluida?" default="failure"/>
+  <exclusiveGateway id="rule" name="Regra de negocio" default="r_ok"/>
+  <task id="flag" name="Sinalizar licoes abaixo de 60% de acerto"/>
+  <exclusiveGateway id="merge"/>
+  <task id="write" name="Gerar progress.json e progress.md"/>
+  <task id="successlog" name="Registrar sucesso e decisao no log"/>
+  <task id="publish" name="MVP consome /api/automation"/>
+  <task id="errorlog" name="Registrar erro (sem dados pessoais)"/>
+  <endEvent id="success" name="Sucesso"/>
+  <endEvent id="error" name="Falha (codigo 1)"/>
+  <sequenceFlow id="s1" sourceRef="start" targetRef="validate"/>
+  <sequenceFlow id="s2" sourceRef="validate" targetRef="readok"/>
+  <sequenceFlow id="ok" name="Sim" sourceRef="readok" targetRef="rule"><conditionExpression xsi:type="tFormalExpression">read_ok</conditionExpression></sequenceFlow>
+  <sequenceFlow id="failure" name="Nao" sourceRef="readok" targetRef="errorlog"/>
+  <sequenceFlow id="r_review" name="reforco_recomendado" sourceRef="rule" targetRef="flag"><conditionExpression xsi:type="tFormalExpression">lesson.attempts &gt;= 3 and lesson.accuracy &lt; 0.6</conditionExpression></sequenceFlow>
+  <sequenceFlow id="r_empty" name="sem_atividade" sourceRef="rule" targetRef="merge"><conditionExpression xsi:type="tFormalExpression">attempts == 0</conditionExpression></sequenceFlow>
+  <sequenceFlow id="r_ok" name="progresso_adequado" sourceRef="rule" targetRef="merge"/>
+  <sequenceFlow id="s3" sourceRef="flag" targetRef="merge"/>
+  <sequenceFlow id="s4" sourceRef="merge" targetRef="write"/>
+  <sequenceFlow id="s5" sourceRef="write" targetRef="successlog"/>
+  <sequenceFlow id="s6" sourceRef="successlog" targetRef="publish"/>
+  <sequenceFlow id="s7" sourceRef="publish" targetRef="success"/>
+  <sequenceFlow id="s8" sourceRef="errorlog" targetRef="error"/>
+</process>
+<bpmndi:BPMNDiagram id="Diagram_Acolhe"><bpmndi:BPMNPlane id="Plane_Acolhe" bpmnElement="RelatorioAcolhe">
+  <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="40" y="182" width="36" height="36"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="validate_di" bpmnElement="validate"><dc:Bounds x="120" y="160" width="120" height="80"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="readok_di" bpmnElement="readok" isMarkerVisible="true"><dc:Bounds x="285" y="175" width="50" height="50"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="rule_di" bpmnElement="rule" isMarkerVisible="true"><dc:Bounds x="385" y="175" width="50" height="50"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="flag_di" bpmnElement="flag"><dc:Bounds x="480" y="40" width="120" height="80"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="merge_di" bpmnElement="merge"><dc:Bounds x="645" y="175" width="50" height="50"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="write_di" bpmnElement="write"><dc:Bounds x="740" y="160" width="120" height="80"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="successlog_di" bpmnElement="successlog"><dc:Bounds x="900" y="160" width="120" height="80"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="publish_di" bpmnElement="publish"><dc:Bounds x="1060" y="160" width="120" height="80"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="success_di" bpmnElement="success"><dc:Bounds x="1222" y="182" width="36" height="36"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="errorlog_di" bpmnElement="errorlog"><dc:Bounds x="250" y="320" width="120" height="80"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNShape id="error_di" bpmnElement="error"><dc:Bounds x="422" y="342" width="36" height="36"/></bpmndi:BPMNShape>
+  <bpmndi:BPMNEdge id="s1_di" bpmnElement="s1"><di:waypoint x="76" y="200"/><di:waypoint x="120" y="200"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="s2_di" bpmnElement="s2"><di:waypoint x="240" y="200"/><di:waypoint x="285" y="200"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="ok_di" bpmnElement="ok"><di:waypoint x="335" y="200"/><di:waypoint x="385" y="200"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="failure_di" bpmnElement="failure"><di:waypoint x="310" y="225"/><di:waypoint x="310" y="320"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="r_review_di" bpmnElement="r_review"><di:waypoint x="410" y="175"/><di:waypoint x="410" y="80"/><di:waypoint x="480" y="80"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="r_empty_di" bpmnElement="r_empty"><di:waypoint x="410" y="225"/><di:waypoint x="410" y="270"/><di:waypoint x="670" y="270"/><di:waypoint x="670" y="225"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="r_ok_di" bpmnElement="r_ok"><di:waypoint x="435" y="200"/><di:waypoint x="645" y="200"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="s3_di" bpmnElement="s3"><di:waypoint x="600" y="80"/><di:waypoint x="670" y="80"/><di:waypoint x="670" y="175"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="s4_di" bpmnElement="s4"><di:waypoint x="695" y="200"/><di:waypoint x="740" y="200"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="s5_di" bpmnElement="s5"><di:waypoint x="860" y="200"/><di:waypoint x="900" y="200"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="s6_di" bpmnElement="s6"><di:waypoint x="1020" y="200"/><di:waypoint x="1060" y="200"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="s7_di" bpmnElement="s7"><di:waypoint x="1180" y="200"/><di:waypoint x="1222" y="200"/></bpmndi:BPMNEdge>
+  <bpmndi:BPMNEdge id="s8_di" bpmnElement="s8"><di:waypoint x="370" y="360"/><di:waypoint x="422" y="360"/></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</definitions>

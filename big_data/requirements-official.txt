@@ -1,0 +1,3 @@
+# Needed only to extract OBMigra indicators from the official PDF (big_data.official_integration).
+# Version validated on 2026-11-14 against Dados2025.pdf (sha256 36bf2281...).
+pymupdf==2.1

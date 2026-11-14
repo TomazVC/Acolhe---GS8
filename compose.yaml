@@ -6,12 +6,17 @@ services:
     read_only: true
     tmpfs:
       - /tmp:size=16m,noexec,nosuid
+    volumes:
+      # Persistent SQLite (7-day retention enforced by the app). Survives
+      # container recreation; `docker compose down -v` erases it (LGPD deletion).
+      - acolhe-data:/data
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     environment:
       HOST: 0.0.0.0
       PORT: "8080"
       ROBOT_MODE: simulate
+      ACOLHE_DB: /data/acolhe.db
     restart: unless-stopped
   prometheus:
     image: prom/prometheus:v3.2.1
@@ -22,3 +27,5 @@ services:
       - ./devsecops/monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
+volumes:
+  acolhe-data:

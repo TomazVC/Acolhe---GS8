@@ -1,0 +1,32 @@
+﻿== waiting for API + DAG parsing
+3.1.0
+dag_id                    | fileloc                                              | owners  | is_paused | bundle_name | bundle_version
+acolhe_medallion          | /opt/acolhe/big_data/airflow/acolhe_dag.py           | airflow | True      | dags-folder | None          
+acolhe_official_snapshots | /opt/acolhe/big_data/airflow/official_sources_dag.py | airflow | True      | dags-folder | None          
+No data found
+== counts before
+   counts {'batches': 4, 'bronze': 8, 'silver': 4, 'quarantine': 0, 'fact_indicators': 4, 'official_batches': 2, 'silver_official_indicator': 7, 'dim_municipality': 645}
+== acolhe_medallion execution 1
+-- acolhe_medallion triggered: manual__2026-11-14T02:50:03.066556+00:00_jwr06TFH
+   dag run state: success
+   task acolhe_medallion                  ingest_demand       success  2026-11-14T02:50:06.627453+00:00  2026-11-14T02:50:06.708722+00:00
+   task acolhe_medallion                  ingest_services     success  2026-11-14T02:50:06.628839+00:00  2026-11-14T02:50:06.715899+00:00
+   task acolhe_medallion                  medallion           success  2026-11-14T02:50:07.717657+00:00  2026-11-14T02:50:08.179534+00:00
+   task acolhe_medallion                  integrate_official  success  2026-11-14T02:50:08.478577+00:00  2026-11-14T02:50:08.869647+00:00
+   counts {'batches': 4, 'bronze': 8, 'silver': 4, 'quarantine': 0, 'fact_indicators': 4, 'official_batches': 2, 'silver_official_indicator': 7, 'dim_municipality': 645}
+== acolhe_medallion execution 2
+-- acolhe_medallion triggered: manual__2026-11-14T02:50:17.105885+00:00_MQL9QRtO
+   dag run state: success
+   task acolhe_medallion                  ingest_demand       success  2026-11-14T02:50:18.467278+00:00  2026-11-14T02:50:18.546391+00:00
+   task acolhe_medallion                  ingest_services     success  2026-11-14T02:50:18.490101+00:00  2026-11-14T02:50:18.820242+00:00
+   task acolhe_medallion                  medallion           success  2026-11-14T02:50:19.555054+00:00  2026-11-14T02:50:19.711590+00:00
+   task acolhe_medallion                  integrate_official  success  2026-11-14T02:50:20.606343+00:00  2026-11-14T02:50:20.967140+00:00
+   counts {'batches': 4, 'bronze': 8, 'silver': 4, 'quarantine': 0, 'fact_indicators': 4, 'official_batches': 2, 'silver_official_indicator': 7, 'dim_municipality': 645}
+== acolhe_official_snapshots (real IBGE + OBMigra acquisition, in parallel)
+-- acolhe_official_snapshots triggered: manual__2026-11-14T02:50:30.620294+00:00_jAuI6KbC
+   dag run state: success
+   task acolhe_official_snapshots                  collect_ibge_territory  success  2026-11-14T02:50:36.643610+00:00  2026-11-14T02:50:36.854787+00:00
+   task acolhe_official_snapshots                  collect_obmigra_report  success  2026-11-14T02:50:36.644382+00:00  2026-11-14T02:50:39.286303+00:00
+   task acolhe_official_snapshots                  summarize               success  2026-11-14T02:50:39.596749+00:00  2026-11-14T02:50:39.793645+00:00
+== manifests by retrieval day
+   {'2026-11-14': 6}

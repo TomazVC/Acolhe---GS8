@@ -20,7 +20,7 @@ Segundo dia real: coleta feita em 2026-11-14 UTC (IBGE HTTP 200, 645 municipios,
 docker compose -f big_data/airflow/compose.airflow.yaml up -d     # UI: http://localhost:8081
 bash big_data/airflow/run_evidence.sh 2                            # dispara os DAGs e imprime estados e contagens
 ```
-Imagem oficial `apache/airflow:3.1.0-python3.12` em modo standalone, montando o repositorio e lendo os DAGs de `big_data/airflow`. Log completo em `evidence/airflow_run_20261114.log`.
+Imagem oficial `apache/airflow:3.1.0-python3.12` em modo standalone, montando o repositorio e lendo os DAGs de `big_data/airflow`. Log completo em `evidence/airflow_run_20261114.txt`.
 - `acolhe_medallion`, execucao 1 e execucao 2: dag run = success. `ingest_demand` e `ingest_services` comecaram com 1 ms de diferenca (paralelas), depois `medallion` e `integrate_official`, todas success.
 - Contagens identicas nas duas execucoes: lotes=4, bronze=8, prata=4, quarentena=0, fato=4, lotes oficiais=2, indicadores=7, municipios=645, logo nao houve duplicidade. O warehouse ja tinha os lotes antes da execucao 1; as contagens lote a lote estao em `EVIDENCIAS.md`.
 - `acolhe_official_snapshots`: `collect_ibge_territory` e `collect_obmigra_report` em paralelo, depois `summarize`, todas success (coleta real pela internet).
@@ -70,6 +70,6 @@ Importe databricks/medallion.py como notebook; configure catalog.schema e paths 
 Referencias tecnicas consultadas em 2026-11-07: https://docs.databricks.com/aws/en/delta/merge ; https://docs.databricks.com/aws/en/delta/tutorial ; https://airflow.apache.org/docs/task-sdk/stable/ ; https://docs.databricks.com/aws/en/ingestion/cloud-object-storage/copy-into/examples .
 
 ## Atualizacao dos requisitos (PDF p.34-35)
-Airflow foi ajustado para API publica 3.x. Databricks usa COPY INTO na bronze; o MERGE continua somente na prata. COPY INTO lembra arquivos ja ingeridos: nao altere um arquivo apos ingestao, publique correcao sob novo caminho/data. Nao use force=true para demonstrar idempotencia. O notebook requer schema vazio/compatível; se executou uma versao anterior com esquema diferente, use outro schema e preserve a evidencia antiga. As verificacoes locais de configuracao sao estaticas, nao equivalem a execucao Airflow/Spark.
+Airflow foi ajustado para API publica 3.x. Databricks usa COPY INTO na bronze; o MERGE continua somente na prata. COPY INTO lembra arquivos ja ingeridos: nao altere um arquivo apos ingestao, publique correcao sob novo caminho/data. Nao use force=true para demonstrar idempotencia. O notebook requer schema vazio/compatÃ­vel; se executou uma versao anterior com esquema diferente, use outro schema e preserve a evidencia antiga. As verificacoes locais de configuracao sao estaticas, nao equivalem a execucao Airflow/Spark.
 
 Um segundo DAG, airflow/official_sources_dag.py, prepara aquisicoes IBGE e OBMigra em tarefas paralelas e so resume proveniencia. Nao fabrica uma uniao semantica dessas referencias com demanda/oferta e nao foi ativado. A agenda descrita no arquivo nao esta instalada em nenhum scheduler.
